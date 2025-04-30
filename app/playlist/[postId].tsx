@@ -121,13 +121,19 @@ export default function PlaylistDetailScreen() {
               {playlist?.name}
             </Text>
             {/* 좋아요 버튼 */}
-            <TouchableOpacity onPress={handleLike}>
-              <Ionicons
-                name={playlist?.isLiked ? 'heart' : 'heart-outline'}
-                size={28}
-                color={playlist?.isLiked ? '#FF0000' : 'white'}
-              />
-            </TouchableOpacity>
+            <View className='flex-row items-center gap-2'>
+              <TouchableOpacity onPress={handleLike}>
+                <Ionicons
+                  name={playlist?.isLiked ? 'heart' : 'heart-outline'}
+                  size={28}
+                  color={playlist?.isLiked ? '#FF0000' : 'white'}
+                />
+              </TouchableOpacity>
+
+              <Text className='text-white text-xl font-medium'>
+                {playlist?.likeCount}
+              </Text>
+            </View>
           </View>
           <Text className='text-gray-400 mt-1 text-xl'>
             {playlist?.userNickname}
