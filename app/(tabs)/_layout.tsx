@@ -1,16 +1,20 @@
 import { Tabs } from 'expo-router';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image } from 'react-native';
+import { Foundation, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import authStore from '@/store/authStore';
 
 export default function TabsLayout() {
+  const { userInfo } = authStore();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: 60,
+          height: 50,
           paddingTop: 5,
           paddingBottom: 30,
-          backgroundColor: 'black',
+          backgroundColor: '#121212',
         },
       }}
     >
@@ -18,9 +22,49 @@ export default function TabsLayout() {
         name='index'
         options={{
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name='home' color={color} size={24} />
+            <Foundation name='home' color={color} size={24} />
           ),
-          tabBarActiveTintColor: '#aaffbc',
+          tabBarActiveTintColor: '#1ED760',
+          tabBarInactiveTintColor: '#ffffff',
+          tabBarShowLabel: false,
+        }}
+      />
+      <Tabs.Screen
+        name='playlist'
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name='playlist-play' color={color} size={32} />
+          ),
+          tabBarActiveTintColor: '#1ED760',
+          tabBarInactiveTintColor: '#ffffff',
+          tabBarShowLabel: false,
+        }}
+      />
+      <Tabs.Screen
+        name='chat'
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name='paper-plane-outline' size={22} color={color} />
+          ),
+          tabBarActiveTintColor: '#1ED760',
+          tabBarInactiveTintColor: '#ffffff',
+          tabBarShowLabel: false,
+        }}
+      />
+      <Tabs.Screen
+        name='mypage'
+        options={{
+          tabBarIcon: ({ color, focused }) =>
+            userInfo?.profileUrl ? (
+              <Image
+                source={{ uri: userInfo.profileUrl }}
+                className={`w-8 h-8 rounded-full border ${
+                  focused ? 'border-[#1ed760]' : 'border-gray-500'
+                }`}
+              />
+            ) : (
+              <Ionicons name='person-outline' size={24} color={color} />
+            ),
           tabBarInactiveTintColor: '#ffffff',
           tabBarShowLabel: false,
         }}
