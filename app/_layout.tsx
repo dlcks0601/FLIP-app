@@ -1,4 +1,4 @@
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
@@ -6,14 +6,15 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect } from 'react';
 import authStore from '@/store/authStore';
 import '../global.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/utils/queryClient';
+import { View } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
-const queryClient = new QueryClient();
-
 export default function RootLayout() {
   const router = useRouter();
+  const segments = useSegments();
   const { jwt } = authStore();
 
   const [fontsLoaded] = useFonts({
@@ -49,21 +50,31 @@ export default function RootLayout() {
     return null;
   }
 
+  const noSafeAreaSegments = ['[postId]'];
+  const isSafeAreaRequired = !segments.some((seg) =>
+    noSafeAreaSegments.includes(seg)
+  );
+
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAreaView
-        edges={['top', 'bottom']}
-        className='flex-1 bg-[#121212]'
-        onLayout={onLayoutRootView}
-      >
-        <StatusBar style='light' />
+      {isSafeAreaRequired ? (
+        <SafeAreaView
+          edges={['top', 'bottom']}
+          className='flex-1 bg-[#121212]'
+          onLayout={onLayoutRootView}
+        >
+          <StatusBar style='light' />
+          <Stack screenOptions={{ headerShown: false }} />
+        </SafeAreaView>
+      ) : (
+        <View className='flex-1 bg-[#121212]' onLayout={onLayoutRootView}>
+          <StatusBar style='light' />
 
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        />
-      </SafeAreaView>
+          <Stack screenOptions={{ headerShown: false }} />
+
+          <SafeAreaView edges={['bottom']} />
+        </View>
+      )}
     </QueryClientProvider>
   );
 }
