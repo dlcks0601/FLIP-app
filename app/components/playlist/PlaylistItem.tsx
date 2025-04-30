@@ -13,24 +13,31 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
   const { mutate: likePlaylist } = useLikePlaylist();
 
   const handleLike = (e: any) => {
-    e.stopPropagation(); // 상위 TouchableOpacity의 onPress가 실행되지 않도록 함
+    e.stopPropagation();
     Alert.alert(
-      '플레이리스트 좋아요',
-      '이 플레이리스트를 좋아요 하시겠습니까?',
+      playlist.isLiked ? '플레이리스트 좋아요 취소' : '플레이리스트 좋아요',
+      playlist.isLiked
+        ? '이 플레이리스트의 좋아요를 취소하시겠습니까?'
+        : '이 플레이리스트를 좋아요 하시겠습니까?',
       [
         {
           text: '취소',
           style: 'cancel',
         },
         {
-          text: '좋아요',
+          text: playlist.isLiked ? '좋아요 취소' : '좋아요',
           onPress: () => {
             likePlaylist(playlist.postId.toString(), {
               onSuccess: () => {
-                Alert.alert('알림', '플레이리스트를 좋아요 했습니다.');
+                Alert.alert(
+                  '알림',
+                  playlist.isLiked
+                    ? '플레이리스트 좋아요가 취소되었습니다.'
+                    : '플레이리스트를 좋아요 했습니다.'
+                );
               },
               onError: () => {
-                Alert.alert('오류', '좋아요 처리 중 오류가 발생했습니다.');
+                Alert.alert('오류', '처리 중 오류가 발생했습니다.');
               },
             });
           },
