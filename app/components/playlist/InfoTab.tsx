@@ -1,5 +1,16 @@
-import { View, Text, Image, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Linking,
+} from 'react-native';
 import { Playlist } from '@/types/playlist.type';
+import { Link } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import SpotifyIcon from '../SpotifyIcon';
 
 interface InfoTabProps {
   totalTracks: number;
@@ -14,6 +25,18 @@ export default function InfoTab({
   totalSeconds,
   playlist,
 }: InfoTabProps) {
+  const handleOpenSpotify = async () => {
+    const playlistId = playlist.playlistId;
+    const webUrl = `https://open.spotify.com/playlist/${playlistId}`;
+
+    if (webUrl) {
+      const canOpen = await Linking.canOpenURL(webUrl);
+      if (canOpen) {
+        await Linking.openURL(webUrl);
+      }
+    }
+  };
+
   return (
     <View>
       <View className='flex-row justify-between p-4 gap-4'>
@@ -34,6 +57,14 @@ export default function InfoTab({
           </View>
         </View>
       </View>
+
+      <TouchableOpacity
+        className='flex-row items-center px-4 py-2 gap-2'
+        onPress={handleOpenSpotify}
+      >
+        <SpotifyIcon fill='#1DB954' />
+        <Text className='text-[#1DB954] text-sm'>Spotify에서 열기</Text>
+      </TouchableOpacity>
 
       <View className='px-4'>
         {playlist.tracks?.items.map((item, index) => (

@@ -8,8 +8,10 @@ export interface Playlist {
   likeCount: number;
   viewCount: number;
   createdAt: string;
+  isLiked: boolean;
   name: string;
   images?: { url: string; height: number; width: number }[];
+  uri: string;
   tracks?: {
     href: string;
     total: number;
