@@ -151,7 +151,7 @@ export default function PlaylistDetailScreen() {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className={`flex-1 px-4 py-2${
+            className={`flex-1 px-4 py-2 ${
               activeTab === 'comments' ? 'border-b-2 border-[#1DB954]' : ''
             }`}
             onPress={() => setActiveTab('comments')}
