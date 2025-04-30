@@ -100,9 +100,6 @@ export const likePlaylist = async (postId: string) => {
   const response = await fetcher<LikePlaylistResponse>({
     url: `/playlist/${postId}/like`,
     method: 'POST',
-    data: {
-      postId,
-    },
   });
   return response.data;
 };
@@ -115,9 +112,69 @@ export const deletePlaylist = async (postId: string) => {
   const response = await fetcher<DeletePlaylistResponse>({
     url: `/playlist/${postId}`,
     method: 'DELETE',
+  });
+  return response.data;
+};
+
+export interface Comment {
+  commentId: number;
+  postId: number;
+  userId: number;
+  userNickname: string;
+  userProfileUrl: string;
+  content: string;
+  createdAt: string;
+  likeCount: number;
+  isLiked: boolean;
+}
+
+export interface CommentResponse {
+  message: Message;
+  comments: Comment[];
+}
+
+export interface AddCommentResponse {
+  message: Message;
+  comment: {
+    id: number;
+  };
+}
+export interface AddLikeCommentResponse {
+  message: Message;
+  liked: boolean;
+}
+
+export const fetchComments = async (postId: string) => {
+  const response = await fetcher<CommentResponse>({
+    url: `/playlist/${postId}`,
+    method: 'GET',
+  });
+  return response.data;
+};
+
+export const addComment = async (postId: string, content: string) => {
+  const response = await fetcher<AddCommentResponse>({
+    url: `/comment/${postId}`,
+    method: 'POST',
     data: {
-      postId,
+      content,
     },
+  });
+  return response.data;
+};
+
+export const likeComment = async (commentId: string) => {
+  const response = await fetcher<AddLikeCommentResponse>({
+    url: `/comment/like/${commentId}`,
+    method: 'POST',
+  });
+  return response.data;
+};
+
+export const deleteComment = async (commentId: string) => {
+  const response = await fetcher<AddLikeCommentResponse>({
+    url: `/comment/${commentId}`,
+    method: 'DELETE',
   });
   return response.data;
 };
