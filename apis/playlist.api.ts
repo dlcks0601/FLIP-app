@@ -91,3 +91,33 @@ export const addPlaylist = async (
   });
   return response.data;
 };
+
+export interface LikePlaylistResponse {
+  message: Message;
+}
+
+export const likePlaylist = async (postId: string) => {
+  const response = await fetcher<LikePlaylistResponse>({
+    url: `/playlist/${postId}/like`,
+    method: 'POST',
+    data: {
+      postId,
+    },
+  });
+  return response.data;
+};
+
+export interface DeletePlaylistResponse {
+  message: Message;
+}
+
+export const deletePlaylist = async (postId: string) => {
+  const response = await fetcher<DeletePlaylistResponse>({
+    url: `/playlist/${postId}`,
+    method: 'DELETE',
+    data: {
+      postId,
+    },
+  });
+  return response.data;
+};
