@@ -15,12 +15,9 @@ export default function MyPageScreen() {
   const { isLoggedIn, userInfo } = useAuthStore();
   const [timeRange, setTimeRange] = useState<TimeRange>('medium_term');
   const [contentType, setContentType] = useState<ContentType>('tracks');
-  const { data: tracks, isLoading, error } = useTopTracks(timeRange);
-  const {
-    data: artists,
-    isLoading: artistsLoading,
-    error: artistsError,
-  } = useTopArtists(timeRange);
+  const { data: tracks, isLoading: tracksLoading } = useTopTracks(timeRange);
+  const { data: artists, isLoading: artistsLoading } = useTopArtists(timeRange);
+
   if (!isLoggedIn) {
     return (
       <View className='flex-1 items-center justify-center bg-[#121212]'>
@@ -29,7 +26,7 @@ export default function MyPageScreen() {
     );
   }
 
-  if (isLoading) {
+  if (tracksLoading || artistsLoading) {
     return (
       <View className='flex-1 items-center justify-center bg-[#121212]'>
         <ActivityIndicator size='large' color='#1DB954' />
@@ -37,21 +34,39 @@ export default function MyPageScreen() {
     );
   }
 
-  if (error) {
-    return (
-      <View className='flex-1 items-center justify-center bg-[#121212]'>
-        <Text className='text-white'>에러가 발생했습니다: {error.message}</Text>
-      </View>
-    );
-  }
-
-  if (!tracks || tracks.length === 0) {
-    return (
-      <View className='flex-1 items-center justify-center bg-[#121212]'>
-        <Text className='text-white'>재생 기록이 없습니다.</Text>
-      </View>
-    );
-  }
+  const renderContent = () => {
+    if (contentType === 'tracks') {
+      if (!tracks || tracks.length === 0) {
+        return (
+          <View className='flex-1 items-center justify-center'>
+            <Text className='text-white text-lg'>
+              {timeRange === 'long_term'
+                ? '일년 동안의 재생 기록이 없습니다.'
+                : timeRange === 'medium_term'
+                ? '6개월 동안의 재생 기록이 없습니다.'
+                : '한 달 동안의 재생 기록이 없습니다.'}
+            </Text>
+          </View>
+        );
+      }
+      return <TrackList tracks={tracks} />;
+    } else {
+      if (!artists || artists.length === 0) {
+        return (
+          <View className='flex-1 items-center justify-center'>
+            <Text className='text-white text-lg'>
+              {timeRange === 'long_term'
+                ? '일년 동안의 아티스트 기록이 없습니다.'
+                : timeRange === 'medium_term'
+                ? '6개월 동안의 아티스트 기록이 없습니다.'
+                : '한 달 동안의 아티스트 기록이 없습니다.'}
+            </Text>
+          </View>
+        );
+      }
+      return <ArtistList artists={artists} />;
+    }
+  };
 
   return (
     <View className='flex-1 bg-[#121212]'>
@@ -68,11 +83,7 @@ export default function MyPageScreen() {
       <TimeRangeTabs timeRange={timeRange} onTimeRangeChange={setTimeRange} />
 
       {/* 컨텐츠 리스트 */}
-      {contentType === 'tracks' ? (
-        <TrackList tracks={tracks} />
-      ) : (
-        <ArtistList artists={artists} />
-      )}
+      {renderContent()}
 
       {/* 컨텐츠 타입 탭 메뉴 */}
       <ContentTypeTabs
