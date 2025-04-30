@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import SpotifyLoginButton from '@/app/components/SpotifyLoginButton';
-import SpotifyIcon from '@/app/components/SpotifyIcon';
+
 import authStore from '@/store/authStore';
 
 export default function HomeScreen() {
