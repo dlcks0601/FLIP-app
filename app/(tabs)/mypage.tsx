@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Image, Text, ActivityIndicator } from 'react-native';
 import { useTopArtists, useTopTracks } from '@/hooks/user.query';
 import useAuthStore from '@/store/authStore';
 import { useState } from 'react';
@@ -12,7 +12,7 @@ import TrackList from '@/app/components/mypage/TrackList';
 import ArtistList from '../components/mypage/ArtistList';
 
 export default function MyPageScreen() {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, userInfo } = useAuthStore();
   const [timeRange, setTimeRange] = useState<TimeRange>('medium_term');
   const [contentType, setContentType] = useState<ContentType>('tracks');
   const { data: tracks, isLoading, error } = useTopTracks(timeRange);
@@ -56,8 +56,12 @@ export default function MyPageScreen() {
   return (
     <View className='flex-1 bg-[#121212]'>
       {/* 헤더 */}
-      <View className='items-center'>
-        <Text className='text-white text-2xl font-bold'>순위표</Text>
+      <View className='flex-row items-center px-4 gap-2'>
+        <Image
+          source={{ uri: userInfo.profileUrl }}
+          className='w-10 h-10 rounded-full'
+        />
+        <Text className='text-white text-2xl font-bold'>{userInfo.name}</Text>
       </View>
 
       {/* 시간 탭 메뉴 */}
