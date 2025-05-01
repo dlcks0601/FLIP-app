@@ -1,5 +1,9 @@
 import { View, Image, Text, ActivityIndicator } from 'react-native';
-import { useTopArtists, useTopTracks } from '@/hooks/user.query';
+import {
+  useTopArtists,
+  useTopTracks,
+  useUserTopTrackStats,
+} from '@/hooks/user.query';
 import useAuthStore from '@/store/authStore';
 import { useState } from 'react';
 import TimeRangeTabs, {
@@ -15,8 +19,10 @@ export default function MyPageScreen() {
   const { isLoggedIn, userInfo } = useAuthStore();
   const [timeRange, setTimeRange] = useState<TimeRange>('medium_term');
   const [contentType, setContentType] = useState<ContentType>('tracks');
-  const { data: tracks, isLoading: tracksLoading } = useTopTracks(timeRange);
+  // const { data: tracks, isLoading: tracksLoading } = useTopTracks(timeRange);
   const { data: artists, isLoading: artistsLoading } = useTopArtists(timeRange);
+  const { data: userTopTrackStats, isLoading: userTopTrackStatsLoading } =
+    useUserTopTrackStats(timeRange.replace('_term', ''));
 
   if (!isLoggedIn) {
     return (
@@ -26,7 +32,7 @@ export default function MyPageScreen() {
     );
   }
 
-  if (tracksLoading || artistsLoading) {
+  if (userTopTrackStatsLoading || artistsLoading) {
     return (
       <View className='flex-1 items-center justify-center bg-[#121212]'>
         <ActivityIndicator size='large' color='#1DB954' />
@@ -36,7 +42,7 @@ export default function MyPageScreen() {
 
   const renderContent = () => {
     if (contentType === 'tracks') {
-      if (!tracks || tracks.length === 0) {
+      if (!userTopTrackStats || userTopTrackStats.rank.length === 0) {
         return (
           <View className='flex-1 items-center justify-center'>
             <Text className='text-white text-lg'>
@@ -49,7 +55,7 @@ export default function MyPageScreen() {
           </View>
         );
       }
-      return <TrackList tracks={tracks} />;
+      return <TrackList tracks={userTopTrackStats.rank} />;
     } else {
       if (!artists || artists.length === 0) {
         return (
