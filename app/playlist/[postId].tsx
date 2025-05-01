@@ -15,6 +15,7 @@ import {
   usePlaylists,
   useLikePlaylist,
   useAddComment,
+  useComments,
 } from '@/hooks/playlist.query';
 import { Alert } from 'react-native';
 import { deletePlaylist } from '@/apis/playlist.api';
@@ -33,7 +34,8 @@ export default function PlaylistDetailScreen() {
   const playlist = playlistData?.find((p) => p.postId === numericPostId);
   const { mutate: likePlaylist } = useLikePlaylist();
   const { mutate: addComment } = useAddComment();
-
+  const { data: commentData } = useComments(postId as string);
+  const comments = commentData?.comment;
   const [activeTab, setActiveTab] = useState<TabType>('info');
   const [commentContent, setCommentContent] = useState('');
 
@@ -168,7 +170,9 @@ export default function PlaylistDetailScreen() {
               <View className='flex-row items-center gap-2'>
                 <View className='flex-row items-center gap-2'>
                   <Ionicons name='chatbubble-outline' size={22} color='white' />
-                  <Text className='text-white text-xl font-medium'>1</Text>
+                  <Text className='text-white text-xl font-medium'>
+                    {commentData?.commentCount}
+                  </Text>
                 </View>
                 <View className='flex-row items-center gap-2'>
                   <TouchableOpacity onPress={handleLike}>

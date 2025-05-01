@@ -18,6 +18,7 @@ export interface PlaylistDB {
   isLiked: boolean;
   viewCount: number;
   createdAt: string;
+  commentCount: number;
 }
 
 export interface PlaylistResponse {
@@ -131,6 +132,7 @@ export interface Comment {
 export interface CommentResponse {
   message: Message;
   comment: Comment[];
+  commentCount: number;
 }
 
 export interface AddCommentResponse {
