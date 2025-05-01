@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import authStore from '@/store/authStore';
 import '../global.css';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -15,7 +15,9 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
-  const { jwt } = authStore();
+  const [isAuthRestored, setIsAuthRestored] = useState(false);
+  const [initialAuthCheck, setInitialAuthCheck] = useState(false);
+  const { jwt, isLoggedIn } = authStore();
 
   const [fontsLoaded] = useFonts({
     Pretendard: require('../assets/fonts/Pretendard-Regular.otf'),
@@ -31,24 +33,35 @@ export default function RootLayout() {
   });
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
+    if (fontsLoaded && isAuthRestored) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, isAuthRestored]);
 
   useEffect(() => {
-    if (!fontsLoaded) return;
+    const restore = async () => {
+      await authStore.getState().restoreAuth();
+      setIsAuthRestored(true);
+    };
+    restore();
+  }, []);
 
-    if (jwt.accessToken) {
-      router.replace('/(tabs)');
-    } else {
+  useEffect(() => {
+    if (!fontsLoaded || !isAuthRestored || initialAuthCheck) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    const inProtectedRoute = !inAuthGroup;
+
+    if (!isLoggedIn && inProtectedRoute) {
       router.replace('/(auth)/login');
+    } else if (isLoggedIn && inAuthGroup) {
+      router.replace('/(tabs)');
     }
-  }, [jwt.accessToken, fontsLoaded, router]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+    setInitialAuthCheck(true);
+  }, [isLoggedIn, fontsLoaded, isAuthRestored, segments, initialAuthCheck]);
+
+  if (!fontsLoaded || !isAuthRestored) return null;
 
   const noSafeAreaSegments = ['[postId]'];
   const isSafeAreaRequired = !segments.some((seg) =>
@@ -69,7 +82,6 @@ export default function RootLayout() {
       ) : (
         <View className='flex-1 bg-[#121212]' onLayout={onLayoutRootView}>
           <StatusBar style='light' />
-
           <Stack screenOptions={{ headerShown: false }} />
         </View>
       )}

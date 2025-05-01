@@ -1,7 +1,9 @@
 import { AuthAction, AuthState, Jwt, Spotify, User } from '@/types/auth.type';
-
+import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
 import { combine } from 'zustand/middleware';
+
+const STORAGE_KEY = 'plify-auth';
 
 const useAuthStore = create(
   combine<AuthState, AuthAction>(
@@ -25,24 +27,28 @@ const useAuthStore = create(
       },
     },
     (set) => ({
-      login: (user: User, jwt: Jwt, spotify: Spotify) => {
+      login: async (user, jwt, spotify) => {
+        const authData = { jwt, spotify, user };
+        await SecureStore.setItemAsync(STORAGE_KEY, JSON.stringify(authData));
+
         set({
           isLoggedIn: true,
           userInfo: user,
-          jwt: jwt,
-          spotify: spotify,
+          jwt,
+          spotify,
         });
       },
-      logout: () => {
+      logout: async () => {
+        await SecureStore.deleteItemAsync(STORAGE_KEY);
         set({
           isLoggedIn: false,
           userInfo: {
-            authProvider: 'plify',
-            name: '',
             email: '',
+            name: '',
             nickname: '',
             profileUrl: '',
             userId: 0,
+            authProvider: 'plify',
           },
           jwt: {
             accessToken: '',
@@ -52,6 +58,21 @@ const useAuthStore = create(
             accessToken: '',
             refreshToken: '',
           },
+        });
+      },
+      setJwt: (jwt) => set({ jwt }),
+      setSpotify: (spotify) => set({ spotify }),
+      setUser: (user) => set({ userInfo: user }),
+      restoreAuth: async () => {
+        const data = await SecureStore.getItemAsync(STORAGE_KEY);
+        if (!data) return;
+
+        const parsed = JSON.parse(data);
+        set({
+          isLoggedIn: true,
+          userInfo: parsed.user,
+          jwt: parsed.jwt,
+          spotify: parsed.spotify,
         });
       },
     })

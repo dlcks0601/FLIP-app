@@ -43,4 +43,8 @@ export interface AuthState {
 export interface AuthAction {
   login: (user: User, jwt: Jwt, spotify: Spotify) => void;
   logout: () => void;
+  setJwt: (jwt: Jwt) => void;
+  setSpotify: (spotify: Spotify) => void;
+  setUser: (user: User) => void;
+  restoreAuth: () => Promise<void>;
 }
