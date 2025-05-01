@@ -1,10 +1,34 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
 import authStore from '@/store/authStore';
 
 export default function HomeScreen() {
-  const { userInfo, isLoggedIn } = authStore();
+  const { userInfo, isLoggedIn, logout } = authStore();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    Alert.alert('로그아웃', '정말 로그아웃 하시겠습니까?', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '로그아웃',
+        style: 'destructive',
+        onPress: async () => {
+          await Haptics.notificationAsync(
+            Haptics.NotificationFeedbackType.Success
+          );
+          logout();
+          router.replace('/(auth)/login');
+        },
+      },
+    ]);
+  };
 
   return (
     <View className='flex-1 bg-[#121212]'>
@@ -13,9 +37,14 @@ export default function HomeScreen() {
           <Text className='mt-2 text-lg text-gray-400'>
             {isLoggedIn ? '로그인됨' : '로그인 안됨'}
           </Text>
-          <Text className='mt-2 text-lg text-gray-400'>
-            {userInfo.nickname}
-          </Text>
+          <Text className='mt-2 text-lg text-gray-400'>{userInfo.name}</Text>
+
+          <TouchableOpacity
+            className='mt-8 bg-red-500 px-6 py-3 rounded-lg'
+            onPress={handleLogout}
+          >
+            <Text className='text-white font-bold'>로그아웃</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
