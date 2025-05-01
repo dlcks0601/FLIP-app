@@ -64,8 +64,8 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
         source={{ uri: playlist.images?.[0].url }}
         className='w-full aspect-square'
       />
-      <View className='flex-row justify-between items-center'>
-        <View className='p-3'>
+      <View className='flex-row flex-1 justify-between items-center p-3'>
+        <View className='flex-col'>
           <Text className='text-white text-lg font-semibold' numberOfLines={1}>
             {playlist.name}
           </Text>
@@ -73,14 +73,15 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
             {playlist.userNickname}
           </Text>
         </View>
-        <View className='p-3'>
+        <View className='flex-row items-center gap-1'>
           <TouchableOpacity onPress={handleLike}>
             <Ionicons
               name={playlist.isLiked ? 'heart' : 'heart-outline'}
-              size={20}
+              size={18}
               color={playlist.isLiked ? '#FF0000' : 'white'}
             />
           </TouchableOpacity>
+          <Text className='text-white text-sm'>{playlist.commentCount}</Text>
         </View>
       </View>
     </TouchableOpacity>
