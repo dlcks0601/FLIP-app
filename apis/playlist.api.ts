@@ -130,7 +130,7 @@ export interface Comment {
 
 export interface CommentResponse {
   message: Message;
-  comments: Comment[];
+  comment: Comment[];
 }
 
 export interface AddCommentResponse {
