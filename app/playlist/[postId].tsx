@@ -35,7 +35,7 @@ export default function PlaylistDetailScreen() {
   const { mutate: likePlaylist } = useLikePlaylist();
   const { mutate: addComment } = useAddComment();
   const { data: commentData } = useComments(postId as string);
-  const comments = commentData?.comment;
+
   const [activeTab, setActiveTab] = useState<TabType>('info');
   const [commentContent, setCommentContent] = useState('');
 

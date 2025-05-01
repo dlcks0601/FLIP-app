@@ -18,7 +18,6 @@ import * as Haptics from 'expo-haptics';
 import useAuthStore from '@/store/authStore';
 import CommentItem from './CommentItem';
 import ActionModal from './ActionModal';
-import CommentInput from './CommentInput';
 
 export default function CommentsTab() {
   const { postId } = useLocalSearchParams();
