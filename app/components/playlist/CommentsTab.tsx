@@ -1,13 +1,90 @@
-import { View, Text } from 'react-native';
+import { View, ScrollView } from 'react-native';
+import {
+  useComments,
+  useLikeComment,
+  useDeleteComment,
+  useAddComment,
+} from '@/hooks/playlist.query';
+import { useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
+import * as Haptics from 'expo-haptics';
+import useAuthStore from '@/store/authStore';
+import CommentItem from './CommentItem';
+import ActionModal from './ActionModal';
+import CommentInput from './CommentInput';
 
 export default function CommentsTab() {
+  const { postId } = useLocalSearchParams();
+  const { data: comments } = useComments(postId as string);
+  const likeComment = useLikeComment();
+  const deleteComment = useDeleteComment();
+  const addComment = useAddComment();
+  const [selectedComment, setSelectedComment] = useState<number | null>(null);
+  const { userInfo } = useAuthStore();
+
+  const handleLongPress = async (commentId: number) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setSelectedComment(commentId);
+  };
+
+  const handleLike = async (commentId: string) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    likeComment.mutate(commentId);
+    setSelectedComment(null);
+  };
+
+  const handleDelete = async (commentId: string) => {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    deleteComment.mutate(commentId);
+    setSelectedComment(null);
+  };
+
+  const handleReport = async (commentId: string) => {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    // TODO: 신고 기능 구현
+    console.log('신고:', commentId);
+    setSelectedComment(null);
+  };
+
+  const handleAddComment = async (content: string) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    addComment.mutate({ postId: postId as string, content });
+  };
+
+  const selectedCommentData = selectedComment
+    ? comments?.comment.find((c) => c.commentId === selectedComment)
+    : null;
+
+  const isMyComment = selectedCommentData?.userId === userInfo.userId;
+
   return (
-    <View className='p-4'>
-      <View className='bg-[#282828] rounded-lg p-4'>
-        <Text className='text-gray-400 text-center'>
-          댓글 기능 준비중입니다.
-        </Text>
-      </View>
+    <View className='flex-1 bg-[#121212]'>
+      <ScrollView className='flex-1 p-4'>
+        {comments?.comment.map((comment) => (
+          <CommentItem
+            key={comment.commentId}
+            comment={comment}
+            onLongPress={() => handleLongPress(comment.commentId)}
+            onLike={() => handleLike(comment.commentId.toString())}
+          />
+        ))}
+      </ScrollView>
+
+      <CommentInput onSubmit={handleAddComment} />
+
+      <ActionModal
+        visible={selectedComment !== null}
+        onClose={() => setSelectedComment(null)}
+        onLike={() => selectedComment && handleLike(selectedComment.toString())}
+        onAction={() =>
+          selectedComment &&
+          (isMyComment
+            ? handleDelete(selectedComment.toString())
+            : handleReport(selectedComment.toString()))
+        }
+        isLiked={selectedCommentData?.isLiked || false}
+        actionType={isMyComment ? 'delete' : 'report'}
+      />
     </View>
   );
 }
