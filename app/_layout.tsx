@@ -71,8 +71,6 @@ export default function RootLayout() {
           <StatusBar style='light' />
 
           <Stack screenOptions={{ headerShown: false }} />
-
-          <SafeAreaView edges={['bottom']} />
         </View>
       )}
     </QueryClientProvider>

@@ -125,7 +125,7 @@ export default function PlaylistDetailScreen() {
               <TouchableOpacity onPress={handleLike}>
                 <Ionicons
                   name={playlist?.isLiked ? 'heart' : 'heart-outline'}
-                  size={28}
+                  size={24}
                   color={playlist?.isLiked ? '#FF0000' : 'white'}
                 />
               </TouchableOpacity>
