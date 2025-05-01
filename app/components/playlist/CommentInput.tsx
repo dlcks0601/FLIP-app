@@ -4,14 +4,19 @@ import {
   TouchableOpacity,
   Text,
   Platform,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { useState } from 'react';
 
 interface CommentInputProps {
   onSubmit: (content: string) => void;
+  className?: string;
 }
 
-export default function CommentInput({ onSubmit }: CommentInputProps) {
+export default function CommentInput({
+  onSubmit,
+  className,
+}: CommentInputProps) {
   const [content, setContent] = useState('');
 
   const handleSubmit = () => {
@@ -21,8 +26,8 @@ export default function CommentInput({ onSubmit }: CommentInputProps) {
   };
 
   return (
-    <View className='p-4 border-t border-gray-800 bg-[#121212]'>
-      <View className='flex-row items-center gap-2'>
+    <View className={`border-t border-gray-800 bg-[#121212] ${className}`}>
+      <View className='p-4 flex-row items-center gap-2'>
         <TextInput
           className='flex-1 bg-[#282828] text-white rounded-lg px-4 py-3'
           placeholder='댓글을 입력하세요...'

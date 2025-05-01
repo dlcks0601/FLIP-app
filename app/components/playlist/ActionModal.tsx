@@ -25,7 +25,7 @@ export default function ActionModal({
       onRequestClose={onClose}
     >
       <Pressable className='flex-1 bg-black/50' onPress={onClose}>
-        <View className='flex-1 justify-end pb-16'>
+        <View className='flex-1 justify-end pb-12'>
           <View className='mx-4 bg-[#282828] rounded-xl overflow-hidden'>
             <TouchableOpacity
               className='p-4 border-b border-gray-700'
