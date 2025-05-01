@@ -1,5 +1,15 @@
-import { View, Text, Image, FlatList, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  Dimensions,
+  Pressable,
+  Modal,
+} from 'react-native';
 import { Artist } from '@/apis/user.api';
+import { useState } from 'react';
+import ArtistDetail from '../artist/ArtistDetail';
 
 interface ArtistListProps {
   artists: Artist[] | undefined;
@@ -12,8 +22,19 @@ const GAP = 12;
 const ITEM_WIDTH = (width - PADDING * 2 - GAP) / COLUMN_COUNT;
 
 export default function ArtistList({ artists }: ArtistListProps) {
+  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+
+  const handleArtistPress = (artist: Artist) => {
+    setSelectedArtist(artist);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedArtist(null);
+  };
+
   const renderItem = ({ item, index }: { item: Artist; index: number }) => (
-    <View
+    <Pressable
+      onPress={() => handleArtistPress(item)}
       className={`mb-4 ${index % 2 === 0 ? 'mr-3' : ''}`}
       style={{ width: ITEM_WIDTH }}
     >
@@ -24,22 +45,43 @@ export default function ArtistList({ artists }: ArtistListProps) {
       <Text className='text-white font-medium' numberOfLines={1}>
         {item.name}
       </Text>
-    </View>
+    </Pressable>
   );
 
   return (
-    <FlatList
-      data={artists}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.rank.toString()}
-      numColumns={COLUMN_COUNT}
-      contentContainerStyle={{
-        paddingVertical: 20,
-        paddingHorizontal: PADDING,
-      }}
-      columnWrapperStyle={{
-        justifyContent: 'flex-start',
-      }}
-    />
+    <>
+      <FlatList
+        data={artists}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.rank.toString()}
+        numColumns={COLUMN_COUNT}
+        contentContainerStyle={{
+          paddingVertical: 20,
+          paddingHorizontal: PADDING,
+        }}
+        columnWrapperStyle={{
+          justifyContent: 'flex-start',
+        }}
+      />
+
+      <Modal
+        visible={selectedArtist !== null}
+        animationType='slide'
+        transparent={true}
+        statusBarTranslucent={true}
+        onRequestClose={handleCloseDetail}
+      >
+        {selectedArtist && (
+          <View className='flex-1'>
+            <View className='h-[93%] mt-auto'>
+              <ArtistDetail
+                artist={selectedArtist}
+                onClose={handleCloseDetail}
+              />
+            </View>
+          </View>
+        )}
+      </Modal>
+    </>
   );
 }
