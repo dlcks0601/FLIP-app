@@ -3,6 +3,7 @@ import { Playlist } from '@/types/playlist.type';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useLikePlaylist } from '@/hooks/playlist.query';
+import * as Haptics from 'expo-haptics';
 
 interface PlaylistItemProps {
   playlist: Playlist;
@@ -12,8 +13,10 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
   const router = useRouter();
   const { mutate: likePlaylist } = useLikePlaylist();
 
-  const handleLike = (e: any) => {
+  const handleLike = async (e: any) => {
     e.stopPropagation();
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
     Alert.alert(
       playlist.isLiked ? '플레이리스트 좋아요 취소' : '플레이리스트 좋아요',
       playlist.isLiked
@@ -26,7 +29,13 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
         },
         {
           text: playlist.isLiked ? '좋아요 취소' : '좋아요',
-          onPress: () => {
+          onPress: async () => {
+            await Haptics.impactAsync(
+              playlist.isLiked
+                ? Haptics.ImpactFeedbackStyle.Light
+                : Haptics.ImpactFeedbackStyle.Light
+            );
+
             likePlaylist(playlist.postId.toString(), {
               onSuccess: () => {
                 Alert.alert(
