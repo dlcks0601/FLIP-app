@@ -1,7 +1,6 @@
 import {
   Artist,
   fetchTopArtists,
-  fetchTopTracks,
   fetchUserStats,
   fetchUserTopTrackStats,
   Track,
