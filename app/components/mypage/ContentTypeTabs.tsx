@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 
-export type ContentType = 'tracks' | 'artists';
+export type ContentType = 'tracks' | 'artists' | 'genres';
 
 interface ContentTypeTabsProps {
   contentType: ContentType;
