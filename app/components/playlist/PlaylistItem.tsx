@@ -81,7 +81,7 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
               color={playlist.isLiked ? '#FF0000' : 'white'}
             />
           </TouchableOpacity>
-          <Text className='text-white text-sm'>{playlist.commentCount}</Text>
+          <Text className='text-white text-sm'>{playlist.likeCount}</Text>
         </View>
       </View>
     </TouchableOpacity>

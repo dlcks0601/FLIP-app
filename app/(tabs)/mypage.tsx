@@ -1,9 +1,5 @@
 import { View, Image, Text, ActivityIndicator } from 'react-native';
-import {
-  useTopArtists,
-  useTopTracks,
-  useUserTopTrackStats,
-} from '@/hooks/user.query';
+import { useTopArtists, useUserTopTrackStats } from '@/hooks/user.query';
 import useAuthStore from '@/store/authStore';
 import { useState } from 'react';
 import TimeRangeTabs, {

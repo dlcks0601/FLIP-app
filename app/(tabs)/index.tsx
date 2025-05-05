@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import authStore from '@/store/authStore';
+import { useMyRecentlyPlayed } from '@/hooks/main.query';
 
 export default function HomeScreen() {
   const { userInfo, isLoggedIn, logout } = authStore();
   const router = useRouter();
-
+  const { data: myRecentlyPlayed } = useMyRecentlyPlayed();
   const handleLogout = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
@@ -38,6 +39,18 @@ export default function HomeScreen() {
             {isLoggedIn ? '로그인됨' : '로그인 안됨'}
           </Text>
           <Text className='mt-2 text-lg text-gray-400'>{userInfo.name}</Text>
+          <View>
+            <Text className='text-lg text-gray-400'>최근 재생 목록</Text>
+            <Text className='text-lg text-gray-400'>
+              {myRecentlyPlayed?.items[0]?.track.name}
+            </Text>
+            <Image
+              source={{
+                uri: myRecentlyPlayed?.items[0]?.track.album.images[0].url,
+              }}
+              className='w-10 h-10 rounded-lg'
+            />
+          </View>
 
           <TouchableOpacity
             className='mt-8 bg-red-500 px-6 py-3 rounded-lg'
