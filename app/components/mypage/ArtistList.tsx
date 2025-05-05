@@ -7,12 +7,13 @@ import {
   Pressable,
   Modal,
 } from 'react-native';
-import { Artist } from '@/apis/user.api';
+import { ArtistItem } from '@/apis/user.api';
 import { useState } from 'react';
 import ArtistDetail from '../artist/ArtistDetail';
+import React from 'react';
 
 interface ArtistListProps {
-  artists: Artist[] | undefined;
+  artists: ArtistItem[] | undefined;
 }
 
 const { width } = Dimensions.get('window');
@@ -22,9 +23,9 @@ const GAP = 12;
 const ITEM_WIDTH = (width - PADDING * 2 - GAP) / COLUMN_COUNT;
 
 export default function ArtistList({ artists }: ArtistListProps) {
-  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+  const [selectedArtist, setSelectedArtist] = useState<ArtistItem | null>(null);
 
-  const handleArtistPress = (artist: Artist) => {
+  const handleArtistPress = (artist: ArtistItem) => {
     setSelectedArtist(artist);
   };
 
@@ -32,16 +33,17 @@ export default function ArtistList({ artists }: ArtistListProps) {
     setSelectedArtist(null);
   };
 
-  const renderItem = ({ item, index }: { item: Artist; index: number }) => (
+  const renderItem = ({ item, index }: { item: ArtistItem; index: number }) => (
     <Pressable
       onPress={() => handleArtistPress(item)}
       className={`mb-4 ${index % 2 === 0 ? 'mr-3' : ''}`}
       style={{ width: ITEM_WIDTH }}
     >
       <Image
-        source={{ uri: item.image }}
+        source={{ uri: item.imageUrl }}
         className='w-full aspect-square rounded-full mb-2'
       />
+
       <Text className='text-white font-medium' numberOfLines={1}>
         {item.name}
       </Text>

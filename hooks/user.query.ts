@@ -1,14 +1,12 @@
 import {
-  Artist,
-  fetchTopArtists,
-  fetchUserStats,
+  fetchUserTopArtistStats,
   fetchUserTopTrackStats,
-  Track,
 } from '@/apis/user.api';
 import useAuthStore from '@/store/authStore';
 import { useQuery } from '@tanstack/react-query';
+import { UserTopTrackStats, UserTopArtistStats } from '@/apis/user.api';
 
-type TimeRange = 'short_term' | 'medium_term' | 'long_term';
+// type TimeRange = 'short_term' | 'medium_term' | 'long_term';
 
 // export const useTopTracks = (timeRange: TimeRange = 'medium_term') => {
 //   const { spotify } = useAuthStore();
@@ -20,21 +18,32 @@ type TimeRange = 'short_term' | 'medium_term' | 'long_term';
 //   });
 // };
 
-export const useTopArtists = (timeRange: TimeRange = 'medium_term') => {
-  const { spotify } = useAuthStore();
+// export const useTopArtists = (timeRange: TimeRange = 'medium_term') => {
+//   const { spotify } = useAuthStore();
 
-  return useQuery<Artist[], Error>({
-    queryKey: ['topArtists', spotify.accessToken, timeRange],
-    queryFn: () => fetchTopArtists(timeRange),
-    enabled: !!spotify.accessToken,
-  });
-};
+//   return useQuery<Artist[], Error>({
+//     queryKey: ['topArtists', spotify.accessToken, timeRange],
+//     queryFn: () => fetchTopArtists(timeRange),
+//     enabled: !!spotify.accessToken,
+//   });
+// };
 
 export const useUserTopTrackStats = (range: string) => {
   const { spotify } = useAuthStore();
 
-  return useQuery<fetchUserStats, Error>({
-    queryKey: ['userStats', spotify.accessToken, range],
+  return useQuery<UserTopTrackStats, Error>({
+    queryKey: ['userTopTracks', spotify.accessToken, range],
     queryFn: () => fetchUserTopTrackStats(range),
+    enabled: !!spotify.accessToken,
+  });
+};
+
+export const useUserTopArtistStats = (range: string) => {
+  const { spotify } = useAuthStore();
+
+  return useQuery<UserTopArtistStats, Error>({
+    queryKey: ['userTopArtists', spotify.accessToken, range],
+    queryFn: () => fetchUserTopArtistStats(range),
+    enabled: !!spotify.accessToken,
   });
 };

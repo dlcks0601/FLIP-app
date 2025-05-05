@@ -1,5 +1,8 @@
 import { View, Image, Text, ActivityIndicator } from 'react-native';
-import { useTopArtists, useUserTopTrackStats } from '@/hooks/user.query';
+import {
+  useUserTopArtistStats,
+  useUserTopTrackStats,
+} from '@/hooks/user.query';
 import useAuthStore from '@/store/authStore';
 import { useState } from 'react';
 import TimeRangeTabs, {
@@ -15,8 +18,8 @@ export default function MyPageScreen() {
   const { isLoggedIn, userInfo } = useAuthStore();
   const [timeRange, setTimeRange] = useState<TimeRange>('medium_term');
   const [contentType, setContentType] = useState<ContentType>('tracks');
-  // const { data: tracks, isLoading: tracksLoading } = useTopTracks(timeRange);
-  const { data: artists, isLoading: artistsLoading } = useTopArtists(timeRange);
+  const { data: userTopArtistStats, isLoading: userTopArtistStatsLoading } =
+    useUserTopArtistStats(timeRange.replace('_term', ''));
   const { data: userTopTrackStats, isLoading: userTopTrackStatsLoading } =
     useUserTopTrackStats(timeRange.replace('_term', ''));
 
@@ -28,7 +31,7 @@ export default function MyPageScreen() {
     );
   }
 
-  if (userTopTrackStatsLoading || artistsLoading) {
+  if (userTopTrackStatsLoading || userTopArtistStatsLoading) {
     return (
       <View className='flex-1 items-center justify-center bg-[#121212]'>
         <ActivityIndicator size='large' color='#1DB954' />
@@ -53,7 +56,7 @@ export default function MyPageScreen() {
       }
       return <TrackList tracks={userTopTrackStats.rank} />;
     } else {
-      if (!artists || artists.length === 0) {
+      if (!userTopArtistStats || userTopArtistStats.rank.length === 0) {
         return (
           <View className='flex-1 items-center justify-center'>
             <Text className='text-white text-lg'>
@@ -66,7 +69,7 @@ export default function MyPageScreen() {
           </View>
         );
       }
-      return <ArtistList artists={artists} />;
+      return <ArtistList artists={userTopArtistStats.rank} />;
     }
   };
 

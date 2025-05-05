@@ -9,35 +9,6 @@ export interface Track {
   artist: string;
 }
 
-// top 트랙 리스트 조회
-// export const fetchTopTracks = async (timeRange: string): Promise<Track[]> => {
-//   const { spotify } = useAuthStore.getState();
-
-//   const response = await fetch(
-//     `${SPOTIFY_API_URL}/me/top/tracks?time_range=${timeRange}&limit=50`,
-//     {
-//       method: 'GET',
-//       headers: {
-//         Authorization: `Bearer ${spotify.accessToken}`,
-//       },
-//     }
-//   );
-
-//   if (!response.ok) {
-//     throw new Error(`Spotify API 요청 실패 (Status: ${response.status})`);
-//   }
-
-//   const data = await response.json();
-//   const tracks: Track[] = data.items.map((track: any, index: number) => ({
-//     rank: index + 1,
-//     image: track.album.images[0]?.url,
-//     title: track.name,
-//     artist: track.artists.map((artist: any) => artist.name).join(', '),
-//   }));
-
-//   return tracks;
-// };
-
 export interface Artist {
   id: string;
   name: string;
@@ -82,7 +53,7 @@ export interface Message {
   text: string;
 }
 
-export interface Item {
+export interface TrackItem {
   id: number;
   userId: string;
   rank: number;
@@ -97,16 +68,30 @@ export interface Item {
   diff: number;
 }
 
-export interface fetchUserStats {
+export interface ArtistItem {
+  artistId: string;
+  name: string;
+  imageUrl: string;
+  rank: number;
+  externalUrl: string;
+  diff: number;
+}
+
+export interface UserTopTrackStats {
   message: Message;
-  rank: Item[];
+  rank: TrackItem[];
+}
+
+export interface UserTopArtistStats {
+  message: Message;
+  rank: ArtistItem[];
 }
 
 export const fetchUserTopTrackStats = async (
   range: string
-): Promise<fetchUserStats> => {
+): Promise<UserTopTrackStats> => {
   const { spotify } = useAuthStore.getState();
-  const response = await fetcher<fetchUserStats>({
+  const response = await fetcher<UserTopTrackStats>({
     url: '/rank/track',
     method: 'POST',
     data: {
@@ -114,5 +99,22 @@ export const fetchUserTopTrackStats = async (
       range,
     },
   });
+  console.log('Track Stats Response:', response.data);
+  return response.data;
+};
+
+export const fetchUserTopArtistStats = async (
+  range: string
+): Promise<UserTopArtistStats> => {
+  const { spotify } = useAuthStore.getState();
+  const response = await fetcher<UserTopArtistStats>({
+    url: '/rank/artist',
+    method: 'POST',
+    data: {
+      code: spotify.accessToken,
+      range,
+    },
+  });
+  console.log('Artist Stats Response:', response.data);
   return response.data;
 };

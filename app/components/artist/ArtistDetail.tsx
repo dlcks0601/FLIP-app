@@ -8,12 +8,12 @@ import {
   PanResponder,
   Animated,
 } from 'react-native';
-import { Artist } from '@/apis/user.api';
+import { ArtistItem } from '@/apis/user.api';
 import { Entypo } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
 
 interface ArtistDetailProps {
-  artist: Artist;
+  artist: ArtistItem;
   onClose: () => void;
 }
 
@@ -83,7 +83,7 @@ export default function ArtistDetail({ artist, onClose }: ArtistDetailProps) {
 
           <View className='items-center mb-6'>
             <Image
-              source={{ uri: artist.image }}
+              source={{ uri: artist.imageUrl }}
               className='w-64 h-64 rounded-full mb-4'
             />
             <View className='flex-row items-center gap-2 mb-2'>
@@ -91,9 +91,6 @@ export default function ArtistDetail({ artist, onClose }: ArtistDetailProps) {
                 {artist.name}
               </Text>
             </View>
-            <Text className='text-gray-400 text-base mb-4'>
-              {artist.genres?.join(', ')}
-            </Text>
 
             <Pressable
               onPress={handleOpenSpotify}
