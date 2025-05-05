@@ -2,55 +2,16 @@ import { SPOTIFY_API_URL } from '@/constants/config';
 import useAuthStore from '@/store/authStore';
 import fetcher from '@/utils/fetcher';
 
-export interface Track {
-  rank: number;
-  image: string;
-  title: string;
-  artist: string;
-}
-
-export interface Artist {
-  id: string;
-  name: string;
-  image: string;
-  rank: number;
-  externalUrl: string;
-  genres: string[];
-  followers: number;
-  popularity: number;
-}
-
-// top 아티스트 리스트 조회
-export const fetchTopArtists = async (timeRange: string): Promise<Artist[]> => {
-  const { spotify } = useAuthStore.getState();
-
-  const response = await fetch(
-    `${SPOTIFY_API_URL}/me/top/artists?time_range=${timeRange}&limit=50`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${spotify.accessToken}`,
-      },
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`Spotify API 요청 실패 (Status: ${response.status})`);
-  }
-
-  const data = await response.json();
-  const artists: Artist[] = data.items.map((artist: any, index: number) => ({
-    rank: index + 1,
-    image: artist.images[0]?.url,
-    name: artist.name,
-  }));
-
-  return artists;
-};
-
 export interface Message {
   code: number;
   text: string;
+}
+
+export interface ArtistData {
+  id: number;
+  name: string;
+  imageUrl: string;
+  externalUrl: string;
 }
 
 export interface TrackItem {
@@ -77,6 +38,13 @@ export interface ArtistItem {
   diff: number;
 }
 
+export interface GenreItem {
+  userId: number;
+  rank: number;
+  genre: string;
+  artistData: ArtistData[];
+}
+
 export interface UserTopTrackStats {
   message: Message;
   rank: TrackItem[];
@@ -85,6 +53,11 @@ export interface UserTopTrackStats {
 export interface UserTopArtistStats {
   message: Message;
   rank: ArtistItem[];
+}
+
+export interface UserTopGenreStats {
+  message: Message;
+  genres: GenreItem[];
 }
 
 export const fetchUserTopTrackStats = async (
@@ -116,5 +89,19 @@ export const fetchUserTopArtistStats = async (
     },
   });
   console.log('Artist Stats Response:', response.data);
+  return response.data;
+};
+
+export const fetchUserTopGenreStats = async (
+  range: string
+): Promise<UserTopGenreStats> => {
+  const response = await fetcher<UserTopGenreStats>({
+    url: '/rank/genre',
+    method: 'GET',
+    params: {
+      range,
+    },
+  });
+  console.log('Genre Stats Response:', response.data);
   return response.data;
 };

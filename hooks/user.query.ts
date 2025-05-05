@@ -1,32 +1,12 @@
 import {
   fetchUserTopArtistStats,
+  fetchUserTopGenreStats,
   fetchUserTopTrackStats,
+  UserTopGenreStats,
 } from '@/apis/user.api';
 import useAuthStore from '@/store/authStore';
 import { useQuery } from '@tanstack/react-query';
 import { UserTopTrackStats, UserTopArtistStats } from '@/apis/user.api';
-
-// type TimeRange = 'short_term' | 'medium_term' | 'long_term';
-
-// export const useTopTracks = (timeRange: TimeRange = 'medium_term') => {
-//   const { spotify } = useAuthStore();
-
-//   return useQuery<Track[], Error>({
-//     queryKey: ['topTracks', spotify.accessToken, timeRange],
-//     queryFn: () => fetchTopTracks(timeRange),
-//     enabled: !!spotify.accessToken,
-//   });
-// };
-
-// export const useTopArtists = (timeRange: TimeRange = 'medium_term') => {
-//   const { spotify } = useAuthStore();
-
-//   return useQuery<Artist[], Error>({
-//     queryKey: ['topArtists', spotify.accessToken, timeRange],
-//     queryFn: () => fetchTopArtists(timeRange),
-//     enabled: !!spotify.accessToken,
-//   });
-// };
 
 export const useUserTopTrackStats = (range: string) => {
   const { spotify } = useAuthStore();
@@ -45,5 +25,12 @@ export const useUserTopArtistStats = (range: string) => {
     queryKey: ['userTopArtists', spotify.accessToken, range],
     queryFn: () => fetchUserTopArtistStats(range),
     enabled: !!spotify.accessToken,
+  });
+};
+
+export const useUserTopGenreStats = (range: string) => {
+  return useQuery<UserTopGenreStats, Error>({
+    queryKey: ['userTopGenres', range],
+    queryFn: () => fetchUserTopGenreStats(range),
   });
 };

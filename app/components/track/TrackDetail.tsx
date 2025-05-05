@@ -8,12 +8,13 @@ import {
   PanResponder,
   Animated,
 } from 'react-native';
-import { Item } from '@/apis/user.api';
+
 import { Entypo } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
+import { TrackItem } from '@/apis/user.api';
 
 interface TrackDetailProps {
-  track: Item;
+  track: TrackItem;
   onClose: () => void;
 }
 

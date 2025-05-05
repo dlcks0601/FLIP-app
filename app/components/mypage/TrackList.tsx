@@ -1,4 +1,4 @@
-import { Item } from '@/apis/user.api';
+import { TrackItem } from '@/apis/user.api';
 import {
   View,
   Text,
@@ -13,7 +13,7 @@ import { useState } from 'react';
 import TrackDetail from '../track/TrackDetail';
 
 interface TrackListProps {
-  tracks: Item[];
+  tracks: TrackItem[];
 }
 
 const { width } = Dimensions.get('window');
@@ -23,9 +23,9 @@ const GAP = 12;
 const ITEM_WIDTH = (width - PADDING * 2 - GAP) / COLUMN_COUNT;
 
 export default function TrackList({ tracks }: TrackListProps) {
-  const [selectedTrack, setSelectedTrack] = useState<Item | null>(null);
+  const [selectedTrack, setSelectedTrack] = useState<TrackItem | null>(null);
 
-  const handleTrackPress = (track: Item) => {
+  const handleTrackPress = (track: TrackItem) => {
     setSelectedTrack(track);
   };
 
@@ -33,7 +33,7 @@ export default function TrackList({ tracks }: TrackListProps) {
     setSelectedTrack(null);
   };
 
-  const renderItem = ({ item, index }: { item: Item; index: number }) => {
+  const renderItem = ({ item, index }: { item: TrackItem; index: number }) => {
     const getRankChangeIcon = () => {
       if (item.diff === null) return 'minus';
       if (item.diff > 0) return 'triangle-up';
@@ -59,7 +59,7 @@ export default function TrackList({ tracks }: TrackListProps) {
           className='w-full aspect-square rounded-md mb-2'
         />
         <View className='flex-col items-start gap-1'>
-          <View className='flex-row itemsap-2'>
+          <View className='flex-row itemsap-2 gap-1'>
             <Text className='text-gray-400 font-bold' numberOfLines={1}>
               {item.rank}.
             </Text>
