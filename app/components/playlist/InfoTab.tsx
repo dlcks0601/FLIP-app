@@ -1,15 +1,7 @@
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  Linking,
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 import { Playlist } from '@/types/playlist.type';
 import React from 'react';
 import SpotifyIcon from '../SpotifyIcon';
-import { useComments } from '@/hooks/playlist.query';
 
 interface InfoTabProps {
   totalTracks: number;
@@ -35,7 +27,6 @@ export default function InfoTab({
       }
     }
   };
-  const { data: commentData } = useComments(playlist.postId.toString());
 
   return (
     <View>
