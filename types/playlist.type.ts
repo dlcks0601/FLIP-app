@@ -14,7 +14,7 @@ export interface Playlist {
   uri: string;
   commentCount: number;
   explanation: string;
-  tracks?: {
+  tracks: {
     href: string;
     total: number;
     items: {

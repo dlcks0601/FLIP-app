@@ -5,7 +5,7 @@ import fetcher from '@/utils/fetcher';
 
 export interface Message {
   code: number;
-  message: string;
+  text: string;
 }
 
 export interface PlaylistDB {
