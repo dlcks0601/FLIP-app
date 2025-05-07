@@ -43,10 +43,10 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name='chat'
+        name='stats'
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name='paper-plane-outline' size={22} color={color} />
+            <Ionicons name='stats-chart-sharp' size={22} color={color} />
           ),
           tabBarActiveTintColor: '#1ED760',
           tabBarInactiveTintColor: '#ffffff',

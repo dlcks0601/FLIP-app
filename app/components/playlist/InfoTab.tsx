@@ -7,10 +7,9 @@ import {
   Linking,
 } from 'react-native';
 import { Playlist } from '@/types/playlist.type';
-import { Link } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import SpotifyIcon from '../SpotifyIcon';
+import { useComments } from '@/hooks/playlist.query';
 
 interface InfoTabProps {
   totalTracks: number;
@@ -36,24 +35,27 @@ export default function InfoTab({
       }
     }
   };
+  const { data: commentData } = useComments(playlist.postId.toString());
 
   return (
     <View>
-      <View className='flex-row justify-between p-4 gap-4'>
-        <View className='flex-1 bg-[#282828] rounded-lg p-4'>
-          <View className='items-start'>
-            <Text className='text-[#1DB954] text-4xl font-bold mb-1'>
-              {totalTracks}
-            </Text>
-            <Text className='text-white text-base'>곡 수</Text>
+      <View className='flex-col justify-between p-4 gap-4'>
+        <View className='flex-row gap-4'>
+          <View className='flex-1 bg-[#282828] rounded-lg p-4'>
+            <View className='items-start'>
+              <Text className='text-[#1DB954] text-4xl font-bold mb-1'>
+                {totalTracks}
+              </Text>
+              <Text className='text-white text-base'>곡 수</Text>
+            </View>
           </View>
-        </View>
-        <View className='flex-1 bg-[#282828] rounded-lg p-4'>
-          <View className='items-start'>
-            <Text className='text-[#1DB954] text-4xl font-bold mb-1'>
-              {totalMinutes}:{totalSeconds.toString().padStart(2, '0')}
-            </Text>
-            <Text className='text-white text-base'>플레이리스트 길이</Text>
+          <View className='flex-1 bg-[#282828] rounded-lg p-4'>
+            <View className='items-start'>
+              <Text className='text-[#1DB954] text-4xl font-bold mb-1'>
+                {totalMinutes}:{totalSeconds.toString().padStart(2, '0')}
+              </Text>
+              <Text className='text-white text-base'>플레이리스트 길이</Text>
+            </View>
           </View>
         </View>
       </View>
