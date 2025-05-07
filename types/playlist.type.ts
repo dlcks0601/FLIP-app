@@ -13,6 +13,7 @@ export interface Playlist {
   images?: { url: string; height: number; width: number }[];
   uri: string;
   commentCount: number;
+  explanation: string;
   tracks?: {
     href: string;
     total: number;

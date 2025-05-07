@@ -19,6 +19,8 @@ export interface PlaylistDB {
   viewCount: number;
   createdAt: string;
   commentCount: number;
+  explanation: string;
+  genre: string[];
 }
 
 export interface PlaylistResponse {
@@ -31,6 +33,7 @@ export const fetchPlaylists = async (): Promise<PlaylistResponse> => {
     url: '/playlist',
     method: 'GET',
   });
+  console.log(response.data);
   return response.data;
 };
 
@@ -81,13 +84,17 @@ export interface AddPlaylistResponse {
 }
 
 export const addPlaylist = async (
-  playlistUrl: string
+  playlistUrl: string,
+  explanation: string,
+  genres: number[]
 ): Promise<AddPlaylistResponse> => {
   const response = await fetcher<AddPlaylistResponse>({
     url: '/playlist',
     method: 'POST',
     data: {
       playlistUrl,
+      explanation,
+      genres,
     },
   });
   return response.data;
@@ -130,6 +137,7 @@ export interface Comment {
 }
 
 export interface CommentResponse {
+  explanation: string;
   message: Message;
   comment: Comment[];
   commentCount: number;
@@ -179,4 +187,65 @@ export const deleteComment = async (commentId: string) => {
     method: 'DELETE',
   });
   return response.data;
+};
+
+export interface GenreCategory {
+  id: number;
+  name: string;
+}
+
+export interface GenreCategoryResponse {
+  message: Message;
+  genres: GenreCategory[];
+}
+
+export const fetchGenreCategory = async () => {
+  const response = await fetcher<GenreCategoryResponse>({
+    url: `/playlist/genres`,
+    method: 'GET',
+  });
+  return response.data;
+};
+
+export interface PlaylistGenreResponse {
+  playlists: PlaylistDB[];
+  message: Message;
+}
+
+export const fetchPlaylistGenre = async (genreId: number) => {
+  const response = await fetcher<PlaylistGenreResponse>({
+    url: `/playlist/genre`,
+    method: 'GET',
+    params: {
+      genreId,
+    },
+  });
+  return response.data;
+};
+
+export const fetchGenrePlaylistsDetails = async (
+  genreId: number
+): Promise<Playlist[]> => {
+  const storedData = await fetchPlaylistGenre(genreId);
+  const { playlists } = storedData;
+  const enrichedPlaylists = await Promise.all(
+    playlists.map(async (playlist: PlaylistDB) => {
+      try {
+        const spotifyDetail = await fetchPlaylistDetail(playlist.playlistId);
+        return {
+          ...playlist,
+          ...spotifyDetail,
+        };
+      } catch (error) {
+        console.error('Spotify API 호출 중 오류 발생:', error);
+        return {
+          ...playlist,
+          image: null,
+          name: 'Unknown Playlist',
+          spotifyDetail: null,
+        };
+      }
+    })
+  );
+  return enrichedPlaylists;
 };

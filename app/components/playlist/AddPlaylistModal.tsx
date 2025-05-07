@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useState } from 'react';
-import { useAddPlaylist } from '@/hooks/playlist.query';
+import { useAddPlaylist, useGenreCategory } from '@/hooks/playlist.query';
 
 interface AddPlaylistModalProps {
   isVisible: boolean;
@@ -24,7 +24,20 @@ export default function AddPlaylistModal({
   onClose,
 }: AddPlaylistModalProps) {
   const [link, setLink] = useState('');
+  const [explanation, setExplanation] = useState('');
+  const [genres, setGenres] = useState<number[]>([]);
   const { mutate: addPlaylist, isPending } = useAddPlaylist();
+
+  // 장르 목록 불러오기
+  const { data: genreData } = useGenreCategory();
+  const genreList = genreData?.genres ?? [];
+
+  // 장르 토글 함수
+  const toggleGenre = (genre: number) => {
+    setGenres((prev) =>
+      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+    );
+  };
 
   const handleAddPlaylist = () => {
     if (!link.trim()) {
@@ -40,15 +53,22 @@ export default function AddPlaylistModal({
       {
         text: '추가',
         onPress: () => {
-          addPlaylist(link, {
-            onSuccess: () => {
-              setLink('');
-              onClose();
+          addPlaylist(
+            {
+              playlistUrl: link,
+              explanation,
+              genres,
             },
-            onError: () => {
-              Alert.alert('오류', '플레이리스트 추가에 실패했습니다.');
-            },
-          });
+            {
+              onSuccess: () => {
+                setLink('');
+                onClose();
+              },
+              onError: () => {
+                Alert.alert('오류', '플레이리스트 추가에 실패했습니다.');
+              },
+            }
+          );
         },
       },
     ]);
@@ -80,12 +100,44 @@ export default function AddPlaylistModal({
             </View>
 
             <TextInput
-              className='bg-[#404040] text-white p-4 rounded-lg mb-6 h-12'
+              className='bg-[#404040] text-white p-4 rounded-lg mb-4 h-12'
               placeholder='링크를 입력하세요'
               placeholderTextColor='#9CA3AF'
               value={link}
               onChangeText={setLink}
             />
+
+            <TextInput
+              className='bg-[#404040] text-white p-4 rounded-lg mb-4 h-20'
+              placeholder='설명을 입력하세요'
+              placeholderTextColor='#9CA3AF'
+              value={explanation}
+              onChangeText={setExplanation}
+              multiline
+            />
+
+            <View className='mb-6'>
+              <Text className='text-white mb-2'>장르 선택</Text>
+              <View className='flex-row flex-wrap gap-2'>
+                {genreList.map((genre) => (
+                  <TouchableOpacity
+                    key={genre.id}
+                    className={`px-4 py-2 rounded-full ${
+                      genres.includes(genre.id) ? 'bg-white' : 'bg-[#232323]'
+                    }`}
+                    onPress={() => toggleGenre(genre.id)}
+                  >
+                    <Text
+                      className={
+                        genres.includes(genre.id) ? 'text-black' : 'text-white'
+                      }
+                    >
+                      {genre.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
 
             <TouchableOpacity
               className='bg-[#1DB954] p-4 rounded-lg items-center'

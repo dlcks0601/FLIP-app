@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react';
 import InfoTab from '@/app/components/playlist/InfoTab';
 import CommentsTab from '@/app/components/playlist/CommentsTab';
 import * as Haptics from 'expo-haptics';
+import useAuthStore from '@/store/authStore';
 
 type TabType = 'info' | 'comments';
 
@@ -49,6 +50,12 @@ export default function PlaylistDetailScreen() {
   const totalSeconds = Math.floor((totalDurationMs % 60000) / 1000);
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  // 현재 로그인한 사용자 정보 가져오기
+  const { userInfo } = useAuthStore();
+
+  // 내가 작성한 플레이리스트인지 확인
+  const isMyPlaylist = userInfo.userId === playlist?.userId;
 
   useEffect(() => {
     const showListener = Keyboard.addListener(
@@ -144,25 +151,27 @@ export default function PlaylistDetailScreen() {
               <Feather name='chevron-left' size={32} color='white' />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              className='absolute top-16 right-4'
-              onPress={() => {
-                Alert.alert('삭제', '삭제하시겠습니까?', [
-                  { text: '취소', style: 'cancel' },
-                  {
-                    text: '삭제',
-                    onPress: () => {
-                      deletePlaylist(postId as string);
+            {isMyPlaylist && (
+              <TouchableOpacity
+                className='absolute top-16 right-4'
+                onPress={() => {
+                  Alert.alert('삭제', '삭제하시겠습니까?', [
+                    { text: '취소', style: 'cancel' },
+                    {
+                      text: '삭제',
+                      onPress: () => {
+                        deletePlaylist(postId as string);
+                      },
                     },
-                  },
-                ]);
-              }}
-            >
-              <AntDesign name='ellipsis1' size={32} color='white' />
-            </TouchableOpacity>
+                  ]);
+                }}
+              >
+                <AntDesign name='ellipsis1' size={32} color='white' />
+              </TouchableOpacity>
+            )}
           </View>
 
-          <View className='flex-col p-4'>
+          <View className='flex-col p-4 gap-3'>
             <View className='flex-row justify-between items-center'>
               <Text className='text-white text-4xl font-bold'>
                 {playlist?.name}
@@ -188,9 +197,20 @@ export default function PlaylistDetailScreen() {
                 </View>
               </View>
             </View>
-            <Text className='text-gray-400 mt-1 text-xl'>
-              {playlist?.userNickname}
-            </Text>
+            <View>
+              <Text className='text-gray-300 text-sm'>
+                {commentData?.explanation}
+              </Text>
+            </View>
+            <View className='flex-row items-center gap-2 mt-1'>
+              <Image
+                source={{ uri: userInfo.profileUrl }}
+                className='w-5 h-5 rounded-full'
+              />
+              <Text className='text-white text-md font-bold'>
+                {playlist?.userNickname}
+              </Text>
+            </View>
           </View>
 
           <View className='flex-row border-b border-gray-800'>

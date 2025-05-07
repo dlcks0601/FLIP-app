@@ -8,6 +8,8 @@ import {
   addComment,
   likeComment,
   deleteComment,
+  fetchGenreCategory,
+  fetchGenrePlaylistsDetails,
 } from '@/apis/playlist.api';
 import { queryClient } from '@/utils/queryClient';
 
@@ -20,7 +22,15 @@ export const usePlaylists = () => {
 
 export const useAddPlaylist = () => {
   return useMutation({
-    mutationFn: addPlaylist,
+    mutationFn: ({
+      playlistUrl,
+      explanation,
+      genres,
+    }: {
+      playlistUrl: string;
+      explanation: string;
+      genres: number[];
+    }) => addPlaylist(playlistUrl, explanation, genres),
     onSuccess: () => {
       console.log('playlists 추가');
       queryClient.invalidateQueries({ queryKey: ['playlists'] });
@@ -90,5 +100,19 @@ export const useDeleteComment = () => {
         queryKey: ['comments'],
       });
     },
+  });
+};
+
+export const useGenreCategory = () => {
+  return useQuery({
+    queryKey: ['genreCategory'],
+    queryFn: () => fetchGenreCategory(),
+  });
+};
+
+export const usePlaylistGenre = (genreId: number) => {
+  return useQuery({
+    queryKey: ['playlistGenre', genreId],
+    queryFn: () => fetchGenrePlaylistsDetails(genreId),
   });
 };
