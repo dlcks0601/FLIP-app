@@ -26,6 +26,7 @@ module.exports = {
         extrabold: ['Pretendard-ExtraBold'],
         black: ['Pretendard-Black'],
         mono: ['SpaceMono'],
+        logo: ['Montserrat-Black'],
       },
     },
   },

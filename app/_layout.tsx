@@ -17,7 +17,7 @@ export default function RootLayout() {
   const segments = useSegments();
   const [isAuthRestored, setIsAuthRestored] = useState(false);
   const [initialAuthCheck, setInitialAuthCheck] = useState(false);
-  const { jwt, isLoggedIn } = authStore();
+  const { isLoggedIn } = authStore();
 
   const [fontsLoaded] = useFonts({
     Pretendard: require('../assets/fonts/Pretendard-Regular.otf'),
@@ -30,6 +30,7 @@ export default function RootLayout() {
     'Pretendard-ExtraBold': require('../assets/fonts/Pretendard-ExtraBold.otf'),
     'Pretendard-Black': require('../assets/fonts/Pretendard-Black.otf'),
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Montserrat: require('../assets/fonts/Montserrat-Black.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {
