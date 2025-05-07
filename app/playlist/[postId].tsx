@@ -17,6 +17,7 @@ import {
   useAddComment,
   useComments,
 } from '@/hooks/playlist.query';
+import { useMyPagePlaylistQuery } from '@/hooks/mypage.query';
 import { Alert } from 'react-native';
 import { deletePlaylist } from '@/apis/playlist.api';
 import { useEffect, useState } from 'react';
@@ -30,9 +31,18 @@ type TabType = 'info' | 'comments';
 export default function PlaylistDetailScreen() {
   const router = useRouter();
   const { data: playlistData } = usePlaylists();
+  const { data: myPlaylists } = useMyPagePlaylistQuery(true);
+  const { data: likedPlaylists } = useMyPagePlaylistQuery(false);
   const { postId } = useLocalSearchParams();
   const numericPostId = Number(postId);
-  const playlist = playlistData?.find((p) => p.postId === numericPostId);
+
+  const allPlaylists = [
+    ...(playlistData || []),
+    ...(myPlaylists || []),
+    ...(likedPlaylists || []),
+  ];
+  const playlist = allPlaylists.find((p) => p.postId === numericPostId);
+
   const { mutate: likePlaylist } = useLikePlaylist();
   const { mutate: addComment } = useAddComment();
   const { data: commentData } = useComments(postId as string);
@@ -51,10 +61,8 @@ export default function PlaylistDetailScreen() {
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-  // 현재 로그인한 사용자 정보 가져오기
   const { userInfo } = useAuthStore();
 
-  // 내가 작성한 플레이리스트인지 확인
   const isMyPlaylist = userInfo.userId === playlist?.userId;
 
   useEffect(() => {
