@@ -20,9 +20,13 @@ export default function SpotifyLoginButton({
   const { login } = useAuthMutation();
 
   const handlePress = async () => {
-    const authUrl = `${SPOTIFY_AUTH_URL}?client_id=${SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
-      SPOTIFY_REDIRECT_URI
-    )}&scope=${encodeURIComponent(SPOTIFY_SCOPES)}`;
+    const authUrl =
+      `${SPOTIFY_AUTH_URL}?client_id=${SPOTIFY_CLIENT_ID}` +
+      `&response_type=code` +
+      `&redirect_uri=${encodeURIComponent(SPOTIFY_REDIRECT_URI)}` +
+      `&scope=${encodeURIComponent(SPOTIFY_SCOPES)}` +
+      `&show_dialog=true`;
+    console.log(authUrl);
 
     try {
       const result = await WebBrowser.openAuthSessionAsync(
