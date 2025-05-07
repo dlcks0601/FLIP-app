@@ -44,7 +44,7 @@ export default function PlaylistScreen() {
       <View className='flex-col gap-2'>
         {/* 헤더 */}
         <View className='flex-row items-center justify-between px-4'>
-          <Text className='text-white text-xl font-black'>PLAYLIST</Text>
+          <Text className='text-white text-xl font-logo'>PLAYLIST</Text>
           <TouchableOpacity onPress={() => setIsModalVisible(true)}>
             <AntDesign name='plus' size={24} color='white' />
           </TouchableOpacity>
