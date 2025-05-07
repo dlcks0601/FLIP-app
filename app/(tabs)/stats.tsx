@@ -79,7 +79,7 @@ export default function StatsScreen() {
     <View className='flex-1 bg-[#121212]'>
       {/* 헤더 */}
       <View className='flex-row items-center px-4 gap-2'>
-        <Text className='text-white text-xl font-black'>STATS</Text>
+        <Text className='text-white text-xl font-logo'>STATS</Text>
       </View>
 
       {/* 시간 탭 메뉴 */}
