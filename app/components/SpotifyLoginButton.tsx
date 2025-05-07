@@ -56,7 +56,7 @@ export default function SpotifyLoginButton({
 
   return (
     <TouchableOpacity
-      className='flex-row items-center justify-center bg-[#1ED760] py-5 rounded-xl gap-2'
+      className='flex-row items-center justify-center bg-[#1ED760] py-4 rounded-xl gap-2'
       onPress={handlePress}
     >
       <SpotifyIcon />
