@@ -40,7 +40,7 @@ export default function PlaylistScreen() {
   const isPlaylistLoading = isGenreAll ? isAllLoading : isGenreLoadingPlaylists;
 
   return (
-    <View className='flex-1 bg-[#121212] gap-3'>
+    <View className='flex-1 bg-[#121212] gap-4'>
       <View className='flex-col gap-2'>
         {/* 헤더 */}
         <View className='flex-row items-center justify-between px-4'>
@@ -58,33 +58,35 @@ export default function PlaylistScreen() {
         />
       </View>
 
-      {/* 플레이리스트 목록 */}
-      {isPlaylistLoading ? (
-        <View className='flex-1 justify-center items-center'>
-          <ActivityIndicator size='large' color='#ffffff' />
-        </View>
-      ) : playlists.length === 0 ? (
-        <View className='flex-1 justify-center items-center'>
-          <Text className='text-white'>플레이리스트가 없습니다.</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={playlists}
-          renderItem={({ item }) => (
-            <View className='w-1/2 p-2'>
-              <PlaylistItem playlist={item} />
-            </View>
-          )}
-          keyExtractor={(item) => item.playlistId.toString()}
-          numColumns={2}
-        />
-      )}
+      <View className='flex-1 px-2'>
+        {/* 플레이리스트 목록 */}
+        {isPlaylistLoading ? (
+          <View className='flex-1 justify-center items-center'>
+            <ActivityIndicator size='large' color='#ffffff' />
+          </View>
+        ) : playlists.length === 0 ? (
+          <View className='flex-1 justify-center items-center'>
+            <Text className='text-white'>플레이리스트가 없습니다.</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={playlists}
+            renderItem={({ item }) => (
+              <View className='w-1/2 p-2'>
+                <PlaylistItem playlist={item} />
+              </View>
+            )}
+            keyExtractor={(item) => item.playlistId.toString()}
+            numColumns={2}
+          />
+        )}
 
-      {/* 추가 모달 */}
-      <AddPlaylistModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-      />
+        {/* 추가 모달 */}
+        <AddPlaylistModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+        />
+      </View>
     </View>
   );
 }

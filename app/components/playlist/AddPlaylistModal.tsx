@@ -10,9 +10,10 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useAddPlaylist, useGenreCategory } from '@/hooks/playlist.query';
+import GenreSelectModal from './GenreSelectModal';
 
 interface AddPlaylistModalProps {
   isVisible: boolean;
@@ -26,22 +27,29 @@ export default function AddPlaylistModal({
   const [link, setLink] = useState('');
   const [explanation, setExplanation] = useState('');
   const [genres, setGenres] = useState<number[]>([]);
+  const [isGenreModalVisible, setIsGenreModalVisible] = useState(false);
   const { mutate: addPlaylist, isPending } = useAddPlaylist();
 
   // 장르 목록 불러오기
   const { data: genreData } = useGenreCategory();
   const genreList = genreData?.genres ?? [];
 
-  // 장르 토글 함수
-  const toggleGenre = (genre: number) => {
-    setGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-    );
+  // 선택된 장르 이름 가져오기
+  const getSelectedGenreNames = () => {
+    return genres
+      .map((id) => genreList.find((g) => g.id === id)?.name)
+      .filter(Boolean)
+      .join(', ');
   };
 
   const handleAddPlaylist = () => {
     if (!link.trim()) {
       Alert.alert('알림', '링크를 입력해주세요.');
+      return;
+    }
+
+    if (genres.length === 0) {
+      Alert.alert('알림', '장르를 선택해주세요.');
       return;
     }
 
@@ -55,13 +63,15 @@ export default function AddPlaylistModal({
         onPress: () => {
           addPlaylist(
             {
-              playlistUrl: link,
-              explanation,
+              playlistUrl: link.trim(),
+              explanation: explanation.trim() || '',
               genres,
             },
             {
               onSuccess: () => {
                 setLink('');
+                setExplanation('');
+                setGenres([]);
                 onClose();
               },
               onError: () => {
@@ -109,7 +119,7 @@ export default function AddPlaylistModal({
 
             <TextInput
               className='bg-[#404040] text-white p-4 rounded-lg mb-4 h-20'
-              placeholder='설명을 입력하세요'
+              placeholder='설명을 입력하세요 (선택)'
               placeholderTextColor='#9CA3AF'
               value={explanation}
               onChangeText={setExplanation}
@@ -118,25 +128,17 @@ export default function AddPlaylistModal({
 
             <View className='mb-6'>
               <Text className='text-white mb-2'>장르 선택</Text>
-              <View className='flex-row flex-wrap gap-2'>
-                {genreList.map((genre) => (
-                  <TouchableOpacity
-                    key={genre.id}
-                    className={`px-4 py-2 rounded-full ${
-                      genres.includes(genre.id) ? 'bg-white' : 'bg-[#232323]'
-                    }`}
-                    onPress={() => toggleGenre(genre.id)}
-                  >
-                    <Text
-                      className={
-                        genres.includes(genre.id) ? 'text-black' : 'text-white'
-                      }
-                    >
-                      {genre.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              <TouchableOpacity
+                className='bg-[#404040] p-4 rounded-lg flex-row justify-between items-center'
+                onPress={() => setIsGenreModalVisible(true)}
+              >
+                <Text className='text-white'>
+                  {genres.length > 0
+                    ? getSelectedGenreNames()
+                    : '장르를 선택해주세요'}
+                </Text>
+                <Feather name='chevron-down' size={20} color='white' />
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity
@@ -148,6 +150,14 @@ export default function AddPlaylistModal({
                 {isPending ? '추가중...' : '추가하기'}
               </Text>
             </TouchableOpacity>
+
+            <GenreSelectModal
+              isVisible={isGenreModalVisible}
+              onClose={() => setIsGenreModalVisible(false)}
+              selectedGenres={genres}
+              onGenreSelect={setGenres}
+              genreList={genreList}
+            />
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

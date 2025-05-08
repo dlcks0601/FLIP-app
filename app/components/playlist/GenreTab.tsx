@@ -22,19 +22,22 @@ export default function GenreTab({
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ paddingHorizontal: 10 }}
     >
-      <View className='gap-2 flex-row'>
-        {[{ id: -1, name: '전체' }, ...genres].map((genre) => {
+      <View className='gap-2 flex-row mt-2'>
+        {[
+          { id: -1, name: '전체' },
+          ...[...genres].sort((a, b) => a.id - b.id),
+        ].map((genre) => {
           const isSelected = selectedGenre === genre.name;
           return (
             <TouchableOpacity
               key={genre.id}
               className={`px-4 py-2 rounded-full items-center justify-center ${
-                isSelected ? 'bg-white h-10' : 'bg-[#232323] h-10'
+                isSelected ? 'bg-white h-9' : 'bg-[#232323] h-9'
               }`}
               onPress={() => setSelectedGenre(genre.name)}
             >
               <Text
-                className={`text-sm text-center ${
+                className={`text-sm text-center font-normal ${
                   isSelected ? 'text-black' : 'text-white'
                 }`}
                 numberOfLines={1}
