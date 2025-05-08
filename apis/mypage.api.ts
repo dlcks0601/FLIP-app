@@ -16,7 +16,7 @@ export const fetchMyPlaylists = async (
     url: `/mypage/playlist?mine=${mine}`,
     method: 'GET',
   });
-  console.log(response.data);
+
   return response.data;
 };
 
