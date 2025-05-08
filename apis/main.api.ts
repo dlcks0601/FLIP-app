@@ -125,3 +125,37 @@ export const fetchMyCurrentlyPlaying =
     const data = await response.json();
     return data;
   };
+
+export interface RecentlyPlayedResponse {
+  href: string;
+  limit: number;
+  next: string;
+  cursors: {
+    after: string;
+    before: string;
+  };
+  total: number;
+  items: {
+    track: Track;
+    played_at: string;
+    context: Context;
+  }[];
+}
+
+export const fetchMyRecentlyPlayed =
+  async (): Promise<RecentlyPlayedResponse> => {
+    const { spotify } = useAuthStore.getState();
+
+    const response = await fetch(
+      `${SPOTIFY_API_URL}/me/player/recently-played`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${spotify.accessToken}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+    return data;
+  };
