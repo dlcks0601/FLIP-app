@@ -14,7 +14,9 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { useMyCurrentlyPlaying } from '@/hooks/main.query';
+import { useMyRecentlyPlayed } from '@/hooks/main.query';
 import CurrentlyPlaying from '@/app/components/mypage/CurrentlyPlaying';
+import RecentlyPlaying from '@/app/components/mypage/RecentlyPlaying';
 
 export default function MyPageScreen() {
   const { userInfo } = useAuthStore();
@@ -23,7 +25,10 @@ export default function MyPageScreen() {
     useMyPagePlaylistQuery(true);
   const { data: likedPlaylists, isLoading: isLoadingLiked } =
     useMyPagePlaylistQuery(false);
-  const { data: currentlyPlaying } = useMyCurrentlyPlaying();
+  const { data: currentlyPlaying, isLoading: isCurrentlyPlayingLoading } =
+    useMyCurrentlyPlaying();
+  const { data: recentlyPlayed, isLoading: isRecentlyPlayedLoading } =
+    useMyRecentlyPlayed();
 
   if (isLoadingMine || isLoadingLiked) {
     return (
@@ -45,7 +50,7 @@ export default function MyPageScreen() {
         </View>
       </View>
 
-      <ScrollView>
+      <ScrollView className='flex-1'>
         <View className='flex-col items-center gap-4'>
           {/* 계정 정보 */}
           <View className='flex-col items-center gap-4'>
@@ -78,7 +83,7 @@ export default function MyPageScreen() {
             <TouchableOpacity>
               {/* <Text className='text-gray-400 text-sm'>{userInfo?.posts}</Text> */}
               <Text className='text-white text-center text-xl font-bold'>
-                2
+                {myPlaylists?.length}
               </Text>
               <Text className='text-gray-300 text-md font-light'> 게시물</Text>
             </TouchableOpacity>
@@ -86,14 +91,18 @@ export default function MyPageScreen() {
         </View>
         {/* 현재 재생중 or 최근 재생 */}
         <View className='px-4 mb-10'>
-          {currentlyPlaying && currentlyPlaying.item ? (
+          {isCurrentlyPlayingLoading || isRecentlyPlayedLoading ? (
+            <ActivityIndicator color='#1DB954' />
+          ) : currentlyPlaying?.is_playing && currentlyPlaying.item ? (
             <CurrentlyPlaying item={currentlyPlaying.item} />
+          ) : recentlyPlayed?.items?.[0] ? (
+            <RecentlyPlaying track={recentlyPlayed.items[0].track} />
           ) : (
-            <Text className='text-gray-400'>현재 재생 중인 곡이 없습니다.</Text>
+            <Text className='text-gray-400'>재생 기록이 없습니다.</Text>
           )}
         </View>
         {/* 내 플레이리스트 */}
-        <View className='flex-col gap-4'>
+        <View className='flex-col gap-4 mb-4'>
           <View className='flex-col'>
             <Text className='text-white text-xl font-bold mb-4 px-4'>
               내 플레이리스트
