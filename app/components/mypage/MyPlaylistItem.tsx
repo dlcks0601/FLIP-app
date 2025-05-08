@@ -12,7 +12,7 @@ export default function MyPlaylistItem({ playlist }: MyPlaylistItemProps) {
   return (
     <TouchableOpacity
       onPress={() => router.push(`/playlist/${playlist.postId}`)}
-      className='flex-row items-center gap-3 p-2'
+      className='flex-row items-center gap-3 p-2 px-4'
     >
       <Image
         source={{ uri: playlist.images?.[0]?.url || playlist.userProfileUrl }}

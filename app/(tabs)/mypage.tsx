@@ -10,6 +10,11 @@ import useAuthStore from '@/store/authStore';
 import { useMyPagePlaylistQuery } from '@/hooks/mypage.query';
 import MyPlaylistItem from '@/app/components/mypage/MyPlaylistItem';
 import { useRouter } from 'expo-router';
+import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import { useMyCurrentlyPlaying } from '@/hooks/main.query';
+import CurrentlyPlaying from '@/app/components/mypage/CurrentlyPlaying';
 
 export default function MyPageScreen() {
   const { userInfo } = useAuthStore();
@@ -18,6 +23,7 @@ export default function MyPageScreen() {
     useMyPagePlaylistQuery(true);
   const { data: likedPlaylists, isLoading: isLoadingLiked } =
     useMyPagePlaylistQuery(false);
+  const { data: currentlyPlaying } = useMyCurrentlyPlaying();
 
   if (isLoadingMine || isLoadingLiked) {
     return (
@@ -28,68 +34,121 @@ export default function MyPageScreen() {
   }
 
   return (
-    <ScrollView className='flex-1 bg-[#121212]'>
-      <View className='flex-row items-center px-2 gap-2 py-4'>
-        <Image
-          source={{ uri: userInfo.profileUrl }}
-          className='w-10 h-10 rounded-full'
-        />
-        <Text className='text-white text-2xl font-logo'>{userInfo.name}</Text>
+    <View className='flex-1 bg-[#121212] gap-4'>
+      <View className='flex-row items-center px-4'>
+        <View className='flex-row flex-1 items-center justify-end'>
+          <TouchableOpacity
+            onPress={() => router.push('/components/mypage/setting')}
+          >
+            <Ionicons name='settings-sharp' size={24} color='white' />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <View className='mb-8'>
-        <Text className='text-white text-xl font-bold mb-4 px-2'>
-          내 플레이리스트
-        </Text>
-        {!myPlaylists || myPlaylists.length === 0 ? (
-          <View className='flex items-center justify-center py-4'>
-            <Text className='text-gray-400'>플레이리스트가 없습니다.</Text>
+      <ScrollView>
+        <View className='flex-col items-center gap-4'>
+          {/* 계정 정보 */}
+          <View className='flex-col items-center gap-4'>
+            <Image
+              source={{ uri: userInfo?.profileUrl }}
+              className='w-40 h-40 rounded-full'
+            />
+            <Text className='text-white text-xl font-bold'>
+              {userInfo?.nickname}
+            </Text>
           </View>
-        ) : (
-          <>
-            {myPlaylists.slice(0, 3).map((playlist) => (
-              <MyPlaylistItem key={playlist.postId} playlist={playlist} />
-            ))}
-            {myPlaylists.length > 3 && (
-              <TouchableOpacity
-                onPress={() => router.push('/playlist/all?type=my')}
-                className='mx-32 mt-4 py-3 rounded-full border border-gray-500'
-              >
-                <Text className='text-white text-center text-sm'>
-                  플레이리스트 모두 보기
+          <View className='flex-row items-center gap-20 mb-10'>
+            <View className='flex-col items-center'>
+              <TouchableOpacity>
+                {/* <Text className='text-gray-400 text-sm'>{userInfo?.followers}</Text> */}
+                <Text className='text-white text-center text-xl font-bold'>
+                  2
                 </Text>
+                <Text className='text-gray-300 text-md font-light'>팔로워</Text>
               </TouchableOpacity>
-            )}
-          </>
-        )}
-      </View>
+            </View>
 
-      <View>
-        <Text className='text-white text-xl font-bold mb-4 px-2'>
-          좋아요 한 플레이리스트
-        </Text>
-        {!likedPlaylists || likedPlaylists.length === 0 ? (
-          <View className='flex items-center justify-center py-4'>
-            <Text className='text-gray-400'>플레이리스트가 없습니다.</Text>
+            <TouchableOpacity>
+              {/* <Text className='text-gray-400 text-sm'>{userInfo?.following}</Text> */}
+              <Text className='text-white text-center text-xl font-bold'>
+                2
+              </Text>
+              <Text className='text-gray-300 text-md font-light'>팔로잉</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              {/* <Text className='text-gray-400 text-sm'>{userInfo?.posts}</Text> */}
+              <Text className='text-white text-center text-xl font-bold'>
+                2
+              </Text>
+              <Text className='text-gray-300 text-md font-light'> 게시물</Text>
+            </TouchableOpacity>
           </View>
-        ) : (
-          <>
-            {likedPlaylists.slice(0, 3).map((playlist) => (
-              <MyPlaylistItem key={playlist.postId} playlist={playlist} />
-            ))}
-            {likedPlaylists.length > 3 && (
-              <TouchableOpacity
-                onPress={() => router.push('/playlist/all?type=liked')}
-                className='mx-24 mt-4 py-3 rounded-full border border-gray-500'
-              >
-                <Text className='text-white text-center text-sm'>
-                  좋아요 한 플레이리스트 모두 보기
-                </Text>
-              </TouchableOpacity>
+        </View>
+        {/* 현재 재생중 or 최근 재생 */}
+        <View className='px-4 mb-10'>
+          {currentlyPlaying && currentlyPlaying.item ? (
+            <CurrentlyPlaying item={currentlyPlaying.item} />
+          ) : (
+            <Text className='text-gray-400'>현재 재생 중인 곡이 없습니다.</Text>
+          )}
+        </View>
+        {/* 내 플레이리스트 */}
+        <View className='flex-col gap-4'>
+          <View className='flex-col'>
+            <Text className='text-white text-xl font-bold mb-4 px-4'>
+              내 플레이리스트
+            </Text>
+            {!myPlaylists || myPlaylists.length === 0 ? (
+              <View className='flex items-center justify-center px-4 py-4'>
+                <Text className='text-gray-400'>플레이리스트가 없습니다.</Text>
+              </View>
+            ) : (
+              <>
+                {myPlaylists.slice(0, 3).map((playlist) => (
+                  <MyPlaylistItem key={playlist.postId} playlist={playlist} />
+                ))}
+                {myPlaylists.length > 3 && (
+                  <TouchableOpacity
+                    onPress={() => router.push('/playlist/all?type=my')}
+                    className='mx-32 mt-4 py-3 rounded-full border border-gray-500 mb-4'
+                  >
+                    <Text className='text-white text-center text-sm'>
+                      플레이리스트 모두 보기
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </>
             )}
-          </>
-        )}
-      </View>
-    </ScrollView>
+          </View>
+
+          <View>
+            <Text className='text-white text-xl font-bold mb-4 px-4'>
+              좋아요 한 플레이리스트
+            </Text>
+            {!likedPlaylists || likedPlaylists.length === 0 ? (
+              <View className='flex items-center justify-center py-4'>
+                <Text className='text-gray-400'>플레이리스트가 없습니다.</Text>
+              </View>
+            ) : (
+              <>
+                {likedPlaylists.slice(0, 3).map((playlist) => (
+                  <MyPlaylistItem key={playlist.postId} playlist={playlist} />
+                ))}
+                {likedPlaylists.length > 3 && (
+                  <TouchableOpacity
+                    onPress={() => router.push('/playlist/all?type=liked')}
+                    className='mx-24 mt-4 py-3 rounded-full border border-gray-500'
+                  >
+                    <Text className='text-white text-center text-sm'>
+                      좋아요 한 플레이리스트 모두 보기
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
