@@ -167,8 +167,13 @@ export default function PlaylistDetailScreen() {
                     { text: '취소', style: 'cancel' },
                     {
                       text: '삭제',
-                      onPress: () => {
-                        deletePlaylist(postId as string);
+                      onPress: async () => {
+                        try {
+                          await deletePlaylist(postId as string);
+                          router.replace('/(tabs)/playlist');
+                        } catch (error) {
+                          Alert.alert('오류', '삭제 중 오류가 발생했습니다.');
+                        }
                       },
                     },
                   ]);
