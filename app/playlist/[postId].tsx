@@ -212,7 +212,7 @@ export default function PlaylistDetailScreen() {
             </View>
             <View className='flex-row items-center gap-2 mt-1'>
               <Image
-                source={{ uri: userInfo.profileUrl }}
+                source={{ uri: playlist?.userProfileUrl }}
                 className='w-5 h-5 rounded-full'
               />
               <Text className='text-white text-md font-bold'>
