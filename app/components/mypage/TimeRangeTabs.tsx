@@ -30,7 +30,9 @@ export default function TimeRangeTabs({
           >
             <Text
               className={`px-10 ${
-                timeRange === range ? 'text-white' : 'text-gray-400'
+                timeRange === range
+                  ? 'text-white font-bold'
+                  : 'text-gray-400 font-bold'
               }`}
             >
               {label}

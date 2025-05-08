@@ -28,7 +28,9 @@ export default function ContentTypeTabs({
           >
             <Text
               className={`px-10 ${
-                contentType === type ? 'text-[#1DB954]' : 'text-gray-400'
+                contentType === type
+                  ? 'text-[#1DB954] font-bold'
+                  : 'text-gray-400 font-bold'
               }`}
             >
               {label}
