@@ -7,6 +7,8 @@ export interface User {
   nickname: string;
   profileUrl: string;
   userId: number;
+  followersCount: number;
+  followingsCount: number;
 }
 
 export interface Message {

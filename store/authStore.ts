@@ -16,6 +16,8 @@ const useAuthStore = create(
         profileUrl: '',
         userId: 0,
         authProvider: 'plify',
+        followersCount: 0,
+        followingsCount: 0,
       },
       spotify: {
         accessToken: '',
@@ -49,6 +51,8 @@ const useAuthStore = create(
             profileUrl: '',
             userId: 0,
             authProvider: 'plify',
+            followersCount: 0,
+            followingsCount: 0,
           },
           jwt: {
             accessToken: '',
