@@ -9,6 +9,5 @@ export const postAuthorizationCode = async (
     method: 'POST',
     data: { code: authorizationCode },
   });
-  console.log(response.data);
   return response.data;
 };
