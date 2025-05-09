@@ -64,24 +64,27 @@ export default function MyPageScreen() {
           </View>
           <View className='flex-row items-center gap-20 mb-10'>
             <View className='flex-col items-center'>
-              <TouchableOpacity>
-                {/* <Text className='text-gray-400 text-sm'>{userInfo?.followers}</Text> */}
+              <TouchableOpacity
+                onPress={() => router.push('/mypage/followers?type=followers')}
+              >
                 <Text className='text-white text-center text-xl font-bold'>
-                  2
+                  {userInfo?.followersCount}
                 </Text>
                 <Text className='text-gray-300 text-md font-light'>팔로워</Text>
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity>
-              {/* <Text className='text-gray-400 text-sm'>{userInfo?.following}</Text> */}
+            <TouchableOpacity
+              onPress={() => router.push('/mypage/followers?type=followings')}
+            >
               <Text className='text-white text-center text-xl font-bold'>
-                2
+                {userInfo?.followingsCount}
               </Text>
               <Text className='text-gray-300 text-md font-light'>팔로잉</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
-              {/* <Text className='text-gray-400 text-sm'>{userInfo?.posts}</Text> */}
+            <TouchableOpacity
+              onPress={() => router.push('/playlist/all?type=my')}
+            >
               <Text className='text-white text-center text-xl font-bold'>
                 {myPlaylists?.length}
               </Text>
