@@ -31,6 +31,7 @@ export const useFollowMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['followers'] });
       queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['countFollow'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
     },
   });
 };
