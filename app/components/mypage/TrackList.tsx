@@ -1,4 +1,5 @@
 import { TrackItem } from '@/apis/user.api';
+import React from 'react';
 import {
   View,
   Text,
@@ -35,14 +36,16 @@ export default function TrackList({ tracks }: TrackListProps) {
 
   const renderItem = ({ item, index }: { item: TrackItem; index: number }) => {
     const getRankChangeIcon = () => {
-      if (item.diff === null) return 'minus';
+      if (item.diff === null) return 'plus';
+      if (item.diff === 0) return 'minus';
       if (item.diff > 0) return 'triangle-up';
       if (item.diff < 0) return 'triangle-down';
       return 'minus';
     };
 
     const getRankChangeColor = () => {
-      if (item.diff === null) return '#9E9E9E';
+      if (item.diff === null) return '#0062ff';
+      if (item.diff === 0) return '#9E9E9E';
       if (item.diff > 0) return '#4CAF50';
       if (item.diff < 0) return '#F44336';
       return '#9E9E9E';
