@@ -300,11 +300,17 @@ export default function PlaylistDetailScreen() {
                 source={{ uri: playlist?.userProfileUrl }}
                 className='w-5 h-5 rounded-full'
               />
-              <TouchableOpacity onLongPress={handleLongPressUser}>
+              {!isMyPlaylist ? (
+                <TouchableOpacity onLongPress={handleLongPressUser}>
+                  <Text className='text-white text-md font-bold'>
+                    {playlist?.userNickname}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
                 <Text className='text-white text-md font-bold'>
                   {playlist?.userNickname}
                 </Text>
-              </TouchableOpacity>
+              )}
             </View>
           </View>
 
