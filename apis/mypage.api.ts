@@ -58,3 +58,57 @@ export const fetchMyAllPlaylistsDetails = async (
   );
   return enrichedPlaylist;
 };
+
+export interface AnotherUser {
+  id: number;
+  name: string;
+  profileUrl: string;
+}
+
+export interface AnotherUserPageResponse {
+  message: Message;
+  user: AnotherUser;
+  playlistData: PlaylistDB[];
+  followerCount: number;
+  followingCount: number;
+  playlistCount: number;
+}
+
+export const fetchAnotherUserPage = async (targetUserId: string) => {
+  const response = await fetcher<AnotherUserPageResponse>({
+    url: `/mypage/user/${targetUserId}`,
+    method: 'GET',
+  });
+  return response.data;
+};
+
+export const fetchAnotherUserPlaylistDetail = async (playlistId: string) => {
+  const { spotify } = useAuthStore.getState();
+  const response = await fetch(`${SPOTIFY_API_URL}/playlists/${playlistId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${spotify.accessToken}`,
+    },
+  });
+  const data = await response.json();
+  return data;
+};
+
+export const fetchAnotherUserAllPlaylistsDetails = async (
+  targetUserId: string
+): Promise<Playlist[]> => {
+  const storedData = await fetchAnotherUserPage(targetUserId);
+  const { playlistData } = storedData;
+  const enrichedPlaylist = await Promise.all(
+    playlistData.map(async (playlist: PlaylistDB) => {
+      const spotifyDetail = await fetchAnotherUserPlaylistDetail(
+        playlist.playlistId
+      );
+      return {
+        ...playlist,
+        ...spotifyDetail,
+      };
+    })
+  );
+  return enrichedPlaylist;
+};

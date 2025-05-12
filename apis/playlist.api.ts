@@ -140,6 +140,7 @@ export interface CommentResponse {
   explanation: string;
   message: Message;
   comment: Comment[];
+  isFollowed: boolean;
   commentCount: number;
 }
 

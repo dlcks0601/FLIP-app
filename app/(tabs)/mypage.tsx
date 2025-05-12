@@ -17,6 +17,7 @@ import { useMyCurrentlyPlaying } from '@/hooks/main.query';
 import { useMyRecentlyPlayed } from '@/hooks/main.query';
 import CurrentlyPlaying from '@/app/components/mypage/CurrentlyPlaying';
 import RecentlyPlaying from '@/app/components/mypage/RecentlyPlaying';
+import { useCountFollowQuery } from '@/hooks/follow.query';
 
 export default function MyPageScreen() {
   const { userInfo } = useAuthStore();
@@ -29,6 +30,7 @@ export default function MyPageScreen() {
     useMyCurrentlyPlaying();
   const { data: recentlyPlayed, isLoading: isRecentlyPlayedLoading } =
     useMyRecentlyPlayed();
+  const { data: countFollow } = useCountFollowQuery();
 
   if (isLoadingMine || isLoadingLiked) {
     return (
@@ -68,7 +70,7 @@ export default function MyPageScreen() {
                 onPress={() => router.push('/mypage/followers?type=followers')}
               >
                 <Text className='text-white text-center text-xl font-bold'>
-                  {userInfo?.followersCount}
+                  {countFollow?.data?.followerCount}
                 </Text>
                 <Text className='text-gray-300 text-md font-light'>팔로워</Text>
               </TouchableOpacity>
@@ -78,7 +80,7 @@ export default function MyPageScreen() {
               onPress={() => router.push('/mypage/followers?type=followings')}
             >
               <Text className='text-white text-center text-xl font-bold'>
-                {userInfo?.followingsCount}
+                {countFollow?.data?.followingCount}
               </Text>
               <Text className='text-gray-300 text-md font-light'>팔로잉</Text>
             </TouchableOpacity>
