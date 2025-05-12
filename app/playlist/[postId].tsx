@@ -8,6 +8,8 @@ import {
   Platform,
   KeyboardAvoidingView,
   Keyboard,
+  Modal,
+  Animated,
 } from 'react-native';
 import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons';
@@ -20,11 +22,12 @@ import {
 import { useMyPagePlaylistQuery } from '@/hooks/mypage.query';
 import { Alert } from 'react-native';
 import { deletePlaylist } from '@/apis/playlist.api';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InfoTab from '@/app/components/playlist/InfoTab';
 import CommentsTab from '@/app/components/playlist/CommentsTab';
 import * as Haptics from 'expo-haptics';
 import useAuthStore from '@/store/authStore';
+import { useFollowMutation } from '@/hooks/follow.query';
 
 type TabType = 'info' | 'comments';
 
@@ -35,6 +38,7 @@ export default function PlaylistDetailScreen() {
   const { data: likedPlaylists } = useMyPagePlaylistQuery(false);
   const { postId } = useLocalSearchParams();
   const numericPostId = Number(postId);
+  const followMutation = useFollowMutation();
 
   const allPlaylists = [
     ...(playlistData || []),
@@ -65,6 +69,15 @@ export default function PlaylistDetailScreen() {
 
   const isMyPlaylist = userInfo.userId === playlist?.userId;
 
+  const [isUserModalVisible, setIsUserModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<{
+    id: string;
+    nickname: string;
+    isFollowed: boolean;
+  } | null>(null);
+
+  const overlayOpacity = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
     const showListener = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
@@ -80,6 +93,14 @@ export default function PlaylistDetailScreen() {
       hideListener.remove();
     };
   }, []);
+
+  useEffect(() => {
+    Animated.timing(overlayOpacity, {
+      toValue: isUserModalVisible ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [isUserModalVisible]);
 
   const handleLike = () => {
     Alert.alert(
@@ -118,6 +139,50 @@ export default function PlaylistDetailScreen() {
     setCommentContent('');
   };
 
+  const handleLongPressUser = () => {
+    if (playlist) {
+      setSelectedUser({
+        id: String(playlist.userId),
+        nickname: playlist.userNickname,
+        isFollowed: commentData?.isFollowed || false,
+      });
+      setIsUserModalVisible(true);
+    }
+  };
+
+  const handleFollow = () => {
+    if (selectedUser) {
+      Alert.alert(
+        selectedUser.isFollowed ? '팔로우 취소' : '팔로우',
+        selectedUser.isFollowed
+          ? `${selectedUser.nickname}님을 팔로우 취소하시겠습니까?`
+          : `${selectedUser.nickname}님을 팔로우 하시겠습니까?`,
+        [
+          { text: '취소', style: 'cancel' },
+          {
+            text: selectedUser.isFollowed ? '팔로우 취소' : '팔로우',
+            onPress: () => {
+              followMutation.mutate(selectedUser.id, {
+                onSuccess: () => {
+                  Alert.alert(
+                    '알림',
+                    selectedUser.isFollowed
+                      ? '팔로우가 취소되었습니다.'
+                      : '팔로우 되었습니다.'
+                  );
+                  setIsUserModalVisible(false);
+                },
+                onError: () => {
+                  Alert.alert('오류', '처리 중 오류가 발생했습니다.');
+                },
+              });
+            },
+          },
+        ]
+      );
+    }
+  };
+
   const renderTabContent = () => {
     if (activeTab === 'info') {
       return (
@@ -137,6 +202,21 @@ export default function PlaylistDetailScreen() {
       className='flex-1 bg-[#121212]'
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      {isUserModalVisible && (
+        <Animated.View
+          pointerEvents='none'
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: '#00000045',
+            opacity: overlayOpacity,
+            zIndex: 10,
+          }}
+        />
+      )}
       <View className='flex-1'>
         <Stack.Screen options={{ headerShown: false }} />
 
@@ -220,9 +300,11 @@ export default function PlaylistDetailScreen() {
                 source={{ uri: playlist?.userProfileUrl }}
                 className='w-5 h-5 rounded-full'
               />
-              <Text className='text-white text-md font-bold'>
-                {playlist?.userNickname}
-              </Text>
+              <TouchableOpacity onLongPress={handleLongPressUser}>
+                <Text className='text-white text-md font-bold'>
+                  {playlist?.userNickname}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -281,6 +363,50 @@ export default function PlaylistDetailScreen() {
           </View>
         )}
       </View>
+
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={isUserModalVisible}
+        onRequestClose={() => setIsUserModalVisible(false)}
+      >
+        <View className='flex-1 justify-end'>
+          <View className='bg-[#1E1E1E] rounded-t-3xl h-1/4'>
+            <View className='items-center py-4'>
+              <View className='w-12 h-1 bg-gray-600 rounded-full mb-4' />
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setIsUserModalVisible(false);
+                router.push({
+                  pathname: '/(tabs)/mypage',
+                  params: { userId: selectedUser?.id },
+                });
+              }}
+              className='py-4 px-6 border-b border-gray-800'
+            >
+              <Text className='text-white text-lg text-center'>
+                {selectedUser?.nickname} 페이지
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleFollow} className='py-4 px-6'>
+              <Text
+                className={`text-lg text-center ${
+                  selectedUser?.isFollowed ? 'text-red-500' : 'text-blue-500'
+                }`}
+              >
+                {selectedUser?.isFollowed ? '팔로잉' : '팔로우'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setIsUserModalVisible(false)}
+              className='py-4 px-6 border-t border-gray-800'
+            >
+              <Text className='text-gray-400 text-lg text-center'>취소</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
