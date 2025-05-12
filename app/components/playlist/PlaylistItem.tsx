@@ -65,11 +65,19 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
         className='w-full aspect-square'
       />
       <View className='flex-row flex-1 justify-between items-center p-3'>
-        <View className='flex-col'>
-          <Text className='text-white text-lg font-semibold' numberOfLines={1}>
+        <View className='flex-col flex-1 mr-2'>
+          <Text
+            className='text-white text-lg font-semibold'
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
             {playlist.name}
           </Text>
-          <Text className='text-gray-400 text-xs' numberOfLines={1}>
+          <Text
+            className='text-gray-400 text-xs'
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
             {playlist.userNickname}
           </Text>
         </View>
