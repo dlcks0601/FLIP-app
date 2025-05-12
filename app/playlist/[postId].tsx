@@ -385,8 +385,8 @@ export default function PlaylistDetailScreen() {
               onPress={() => {
                 setIsUserModalVisible(false);
                 router.push({
-                  pathname: '/(tabs)/mypage',
-                  params: { userId: selectedUser?.id },
+                  pathname: '/mypage/user/[targetUserId]',
+                  params: { targetUserId: playlist?.userId?.toString() || '' },
                 });
               }}
               className='py-4 px-6 border-b border-gray-800'

@@ -10,6 +10,7 @@ import { useUserTopGenreStats } from '@/hooks/user.query';
 import { useState } from 'react';
 import { GenreItem } from '@/apis/user.api';
 import GenreDetail from '../genre/GenreDetail';
+import React from 'react';
 
 const { width } = Dimensions.get('window');
 const PADDING = 14;
