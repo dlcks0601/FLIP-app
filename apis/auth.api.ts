@@ -11,3 +11,11 @@ export const postAuthorizationCode = async (
   });
   return response.data;
 };
+
+export const deleteUser = async (): Promise<void> => {
+  const response = await fetcher<void>({
+    url: '/auth',
+    method: 'DELETE',
+  });
+  return response.data;
+};
