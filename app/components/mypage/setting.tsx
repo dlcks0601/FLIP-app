@@ -1,11 +1,13 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import useAuthStore from '@/store/authStore';
 import { Ionicons } from '@expo/vector-icons';
+import { useDeleteUserMutation } from '@/hooks/auth.query';
 
 export default function SettingPage() {
   const router = useRouter();
   const { logout } = useAuthStore();
+  const { deleteUser } = useDeleteUserMutation();
 
   return (
     <ScrollView className='flex-1 bg-[#121212]'>
@@ -47,6 +49,26 @@ export default function SettingPage() {
             }}
           >
             <Text className='text-white text-lg text-center'>로그아웃</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className='bg-red-800 p-4 rounded-lg mt-8'
+            onPress={() => {
+              // 회원 탈퇴 확인 알림
+              Alert.alert(
+                '회원 탈퇴',
+                '정말로 회원 탈퇴를 진행하시겠습니까?\n이 작업은 되돌릴 수 없습니다.',
+                [
+                  { text: '취소', style: 'cancel' },
+                  {
+                    text: '탈퇴',
+                    style: 'destructive',
+                    onPress: () => deleteUser(),
+                  },
+                ]
+              );
+            }}
+          >
+            <Text className='text-white text-lg text-center'>회원 탈퇴</Text>
           </TouchableOpacity>
         </View>
       </View>
