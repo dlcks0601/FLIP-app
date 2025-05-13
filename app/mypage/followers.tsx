@@ -103,7 +103,13 @@ export default function FollowersScreen() {
               className='w-12 h-12 rounded-full'
             />
             <View className='ml-4 flex-1'>
-              <Text className='text-white text-lg font-bold'>{user.name}</Text>
+              <TouchableOpacity
+                onPress={() => router.push(`/mypage/user/${user.id}`)}
+              >
+                <Text className='text-white text-lg font-bold'>
+                  {user.name}
+                </Text>
+              </TouchableOpacity>
             </View>
             {type === 'followers' && (
               <TouchableOpacity
