@@ -44,9 +44,9 @@ export default function TrackList({ tracks }: TrackListProps) {
     };
 
     const getRankChangeColor = () => {
-      if (item.diff === null) return '#0062ff';
+      if (item.diff === null) return '#00ff44';
       if (item.diff === 0) return '#9E9E9E';
-      if (item.diff > 0) return '#4CAF50';
+      if (item.diff > 0) return '#1E90FF';
       if (item.diff < 0) return '#F44336';
       return '#9E9E9E';
     };

@@ -1,8 +1,5 @@
 import MyPlaylistItem from '@/app/components/mypage/MyPlaylistItem';
-import {
-  useAnotherUserPageQuery,
-  useAnotherUserPlaylistQuery,
-} from '@/hooks/mypage.query';
+import { useAnotherUserPageQuery } from '@/hooks/mypage.query';
 import { Feather } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
@@ -13,9 +10,7 @@ export default function UserPage() {
   const { data: anotherUserInfo } = useAnotherUserPageQuery(
     targetUserId as string
   );
-  const { data: anotherUserPlaylist } = useAnotherUserPlaylistQuery(
-    targetUserId as string
-  );
+
   return (
     <View className='flex-1 bg-[#121212] gap-4'>
       <View className='flex-row items-center px-4'>
@@ -58,37 +53,37 @@ export default function UserPage() {
               <Text className='text-gray-300 text-md font-light'>게시물</Text>
             </View>
           </View>
-          <View className='flex-col gap-4 mb-4'>
-            <View className='flex-col'>
-              <Text className='text-white text-xl font-bold mb-4 px-4'>
-                {anotherUserInfo?.user.name} 플레이리스트
-              </Text>
-              {!anotherUserPlaylist || anotherUserPlaylist.length === 0 ? (
-                <View className='flex items-center justify-center px-4 py-4'>
-                  <Text className='text-gray-400'>
-                    플레이리스트가 없습니다.
-                  </Text>
-                </View>
-              ) : (
-                <>
-                  {anotherUserPlaylist.slice(0, 3).map((playlist) => (
-                    <MyPlaylistItem key={playlist.postId} playlist={playlist} />
-                  ))}
-                  {anotherUserPlaylist.length > 3 && (
-                    <TouchableOpacity
-                      onPress={() =>
-                        router.push(`/playlist/user/${targetUserId}?type=my`)
-                      }
-                      className='mx-32 mt-4 py-3 rounded-full border border-gray-500 mb-4'
-                    >
-                      <Text className='text-white text-center text-sm'>
-                        플레이리스트 모두 보기
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </>
-              )}
-            </View>
+        </View>
+
+        <View className='flex-col gap-4 mb-4'>
+          <View className='flex-col'>
+            <Text className='text-white text-xl font-bold mb-4 px-4'>
+              {anotherUserInfo?.user.name} 플레이리스트
+            </Text>
+            {!anotherUserInfo?.playlistData ||
+            anotherUserInfo.playlistData.length === 0 ? (
+              <View className='flex items-center justify-center px-4 py-4'>
+                <Text className='text-gray-400'>플레이리스트가 없습니다.</Text>
+              </View>
+            ) : (
+              <>
+                {anotherUserInfo.playlistData.slice(0, 3).map((playlist) => (
+                  <MyPlaylistItem key={playlist.postId} playlist={playlist} />
+                ))}
+                {anotherUserInfo.playlistData.length > 3 && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push(`/playlist/user/${targetUserId}?type=my`)
+                    }
+                    className='mx-32 mt-4 py-3 rounded-full border border-gray-500 mb-4'
+                  >
+                    <Text className='text-white text-center text-sm'>
+                      플레이리스트 모두 보기
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
           </View>
         </View>
       </ScrollView>

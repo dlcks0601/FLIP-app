@@ -24,7 +24,7 @@ export default function AllPlaylistsScreen() {
       </View>
 
       <ScrollView>
-        {playlists?.map((playlist) => (
+        {playlists?.playlist?.map((playlist) => (
           <MyPlaylistItem key={playlist.postId} playlist={playlist} />
         ))}
       </ScrollView>

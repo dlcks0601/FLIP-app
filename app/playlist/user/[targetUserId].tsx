@@ -1,15 +1,14 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useAnotherUserPlaylistQuery } from '@/hooks/mypage.query';
 import MyPlaylistItem from '@/app/components/mypage/MyPlaylistItem';
 import { Feather } from '@expo/vector-icons';
+import { useAnotherUserPageQuery } from '@/hooks/mypage.query';
 
 export default function UserPlaylistsScreen() {
   const { type, targetUserId } = useLocalSearchParams();
   const router = useRouter();
-  const { data: playlists } = useAnotherUserPlaylistQuery(
-    targetUserId as string
-  );
+  const { data: playlists } = useAnotherUserPageQuery(targetUserId as string);
+  targetUserId as string;
 
   return (
     <View className='flex-1 bg-[#121212]'>
@@ -28,7 +27,7 @@ export default function UserPlaylistsScreen() {
       </View>
 
       <ScrollView>
-        {playlists?.map((playlist) => (
+        {playlists?.playlistData?.map((playlist) => (
           <MyPlaylistItem key={playlist.postId} playlist={playlist} />
         ))}
       </ScrollView>

@@ -34,18 +34,14 @@ type TabType = 'info' | 'comments';
 export default function PlaylistDetailScreen() {
   const router = useRouter();
   const { data: playlistData } = usePlaylists();
-  const { data: myPlaylists } = useMyPagePlaylistQuery(true);
-  const { data: likedPlaylists } = useMyPagePlaylistQuery(false);
+
   const { postId } = useLocalSearchParams();
   const numericPostId = Number(postId);
   const followMutation = useFollowMutation();
 
-  const allPlaylists = [
-    ...(playlistData || []),
-    ...(myPlaylists || []),
-    ...(likedPlaylists || []),
-  ];
-  const playlist = allPlaylists.find((p) => p.postId === numericPostId);
+  const playlist = playlistData?.playlists.find(
+    (p) => Number(p.postId) === numericPostId
+  );
 
   const { mutate: likePlaylist } = useLikePlaylist();
   const { mutate: addComment } = useAddComment();
@@ -54,20 +50,11 @@ export default function PlaylistDetailScreen() {
   const [activeTab, setActiveTab] = useState<TabType>('info');
   const [commentContent, setCommentContent] = useState('');
 
-  const totalTracks = playlist?.tracks?.total || 0;
-  const totalDurationMs =
-    playlist?.tracks?.items?.reduce(
-      (acc, item) => acc + (item.track?.duration_ms || 0),
-      0
-    ) || 0;
-  const totalMinutes = Math.floor(totalDurationMs / 60000);
-  const totalSeconds = Math.floor((totalDurationMs % 60000) / 1000);
-
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   const { userInfo } = useAuthStore();
 
-  const isMyPlaylist = userInfo.userId === playlist?.userId;
+  const isMyPlaylist = userInfo.userId === Number(playlist?.userId);
 
   const [isUserModalVisible, setIsUserModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState<{
@@ -185,14 +172,7 @@ export default function PlaylistDetailScreen() {
 
   const renderTabContent = () => {
     if (activeTab === 'info') {
-      return (
-        <InfoTab
-          totalTracks={totalTracks}
-          totalMinutes={totalMinutes}
-          totalSeconds={totalSeconds}
-          playlist={playlist!}
-        />
-      );
+      return <InfoTab info={commentData!} />;
     }
     return <CommentsTab />;
   };
@@ -228,7 +208,7 @@ export default function PlaylistDetailScreen() {
         >
           <View className='relative'>
             <Image
-              source={{ uri: playlist?.images?.[0].url || '' }}
+              source={{ uri: playlist?.imageUrl || '' }}
               className='w-full aspect-square'
             />
 
@@ -267,7 +247,7 @@ export default function PlaylistDetailScreen() {
           <View className='flex-col p-4 gap-3'>
             <View className='flex-row justify-between items-center'>
               <Text className='text-white text-4xl font-bold'>
-                {playlist?.name}
+                {playlist?.playlistName}
               </Text>
               <View className='flex-row items-center gap-2'>
                 <View className='flex-row items-center gap-2'>

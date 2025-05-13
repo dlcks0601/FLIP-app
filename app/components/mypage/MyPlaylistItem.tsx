@@ -1,9 +1,9 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Playlist } from '@/types/playlist.type';
+import { PlaylistDB } from '@/apis/playlist.api';
 
 interface MyPlaylistItemProps {
-  playlist: Playlist;
+  playlist: PlaylistDB;
 }
 
 export default function MyPlaylistItem({ playlist }: MyPlaylistItemProps) {
@@ -15,13 +15,10 @@ export default function MyPlaylistItem({ playlist }: MyPlaylistItemProps) {
         onPress={() => router.push(`/playlist/${playlist.postId}`)}
         className='flex-row items-center gap-3 p-2 px-4'
       >
-        <Image
-          source={{ uri: playlist.images?.[0]?.url || playlist.userProfileUrl }}
-          className='w-16 h-16'
-        />
+        <Image source={{ uri: playlist.imageUrl }} className='w-16 h-16' />
         <View className='flex-1'>
           <Text className='text-white text-lg' numberOfLines={1}>
-            {playlist.name}
+            {playlist.playlistName}
           </Text>
           <Text className='text-gray-400 text-sm'>
             좋아요: {playlist.likeCount} • 조회수: {playlist.viewCount}

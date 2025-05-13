@@ -1,12 +1,12 @@
 import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
-import { Playlist } from '@/types/playlist.type';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useLikePlaylist } from '@/hooks/playlist.query';
 import * as Haptics from 'expo-haptics';
+import { PlaylistDB } from '@/apis/playlist.api';
 
 interface PlaylistItemProps {
-  playlist: Playlist;
+  playlist: PlaylistDB;
 }
 
 export default function PlaylistItem({ playlist }: PlaylistItemProps) {
@@ -36,7 +36,7 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
                 : Haptics.ImpactFeedbackStyle.Light
             );
 
-            likePlaylist(playlist.postId.toString(), {
+            likePlaylist(String(playlist.postId), {
               onSuccess: () => {
                 Alert.alert(
                   '알림',
@@ -61,7 +61,7 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
       onPress={() => router.push(`/playlist/${playlist.postId}`)}
     >
       <Image
-        source={{ uri: playlist.images?.[0].url }}
+        source={{ uri: playlist.imageUrl }}
         className='w-full aspect-square'
       />
       <View className='flex-row flex-1 justify-between items-center p-3'>
@@ -71,7 +71,7 @@ export default function PlaylistItem({ playlist }: PlaylistItemProps) {
             numberOfLines={1}
             ellipsizeMode='tail'
           >
-            {playlist.name}
+            {playlist.playlistName}
           </Text>
           <Text
             className='text-gray-400 text-xs'

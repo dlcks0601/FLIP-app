@@ -13,8 +13,10 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import { useMyCurrentlyPlaying } from '@/hooks/main.query';
-import { useMyRecentlyPlayed } from '@/hooks/main.query';
+import {
+  useMyCurrentlyPlaying,
+  useMyRecentlyPlayed,
+} from '@/hooks/mypage.query';
 import CurrentlyPlaying from '@/app/components/mypage/CurrentlyPlaying';
 import RecentlyPlaying from '@/app/components/mypage/RecentlyPlaying';
 import { useCountFollowQuery } from '@/hooks/follow.query';
@@ -88,7 +90,7 @@ export default function MyPageScreen() {
               onPress={() => router.push('/playlist/all?type=my')}
             >
               <Text className='text-white text-center text-xl font-bold'>
-                {myPlaylists?.length}
+                {myPlaylists?.playlist.length}
               </Text>
               <Text className='text-gray-300 text-md font-light'> 게시물</Text>
             </TouchableOpacity>
@@ -112,16 +114,16 @@ export default function MyPageScreen() {
             <Text className='text-white text-xl font-bold mb-4 px-4'>
               내 플레이리스트
             </Text>
-            {!myPlaylists || myPlaylists.length === 0 ? (
+            {!myPlaylists || myPlaylists.playlist.length === 0 ? (
               <View className='flex items-center justify-center px-4 py-4'>
                 <Text className='text-gray-400'>플레이리스트가 없습니다.</Text>
               </View>
             ) : (
               <>
-                {myPlaylists.slice(0, 3).map((playlist) => (
+                {myPlaylists?.playlist?.slice(0, 3).map((playlist) => (
                   <MyPlaylistItem key={playlist.postId} playlist={playlist} />
                 ))}
-                {myPlaylists.length > 3 && (
+                {myPlaylists?.playlist?.length > 3 && (
                   <TouchableOpacity
                     onPress={() => router.push('/playlist/all?type=my')}
                     className='mx-32 mt-4 py-3 rounded-full border border-gray-500 mb-4'
@@ -139,16 +141,16 @@ export default function MyPageScreen() {
             <Text className='text-white text-xl font-bold mb-4 px-4'>
               좋아요 한 플레이리스트
             </Text>
-            {!likedPlaylists || likedPlaylists.length === 0 ? (
+            {!likedPlaylists || likedPlaylists.playlist.length === 0 ? (
               <View className='flex items-center justify-center py-4'>
                 <Text className='text-gray-400'>플레이리스트가 없습니다.</Text>
               </View>
             ) : (
               <>
-                {likedPlaylists.slice(0, 3).map((playlist) => (
+                {likedPlaylists.playlist.slice(0, 3).map((playlist) => (
                   <MyPlaylistItem key={playlist.postId} playlist={playlist} />
                 ))}
-                {likedPlaylists.length > 3 && (
+                {likedPlaylists.playlist.length > 3 && (
                   <TouchableOpacity
                     onPress={() => router.push('/playlist/all?type=liked')}
                     className='mx-24 mt-4 py-3 rounded-full border border-gray-500'
