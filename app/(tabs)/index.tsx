@@ -6,90 +6,98 @@ import {
   Alert,
   Image,
   ActivityIndicator,
+  ScrollView,
+  FlatList,
+  Dimensions,
 } from 'react-native';
-import * as Haptics from 'expo-haptics';
-import { useRouter } from 'expo-router';
-import authStore from '@/store/authStore';
-import { useMyCurrentlyPlaying } from '@/hooks/main.query';
+
+import { useTop5Tracks } from '@/hooks/main.query';
+import Top5PlaylistItem from '@/app/components/main/Top5PlaylistItem';
+
+const bannerData = [
+  {
+    id: '1',
+    image:
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+    text: '🎉 신규 이벤트! 지금 참여하세요!',
+  },
+  {
+    id: '2',
+    image:
+      'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80',
+    text: '🔥 인기 플레이리스트 모음',
+  },
+  {
+    id: '3',
+    image:
+      'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80',
+    text: '⭐️ 오늘의 추천 음악',
+  },
+];
+
+const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const { userInfo, isLoggedIn, logout } = authStore();
-  const router = useRouter();
-  const {
-    data: currentlyPlaying,
-    isLoading,
-    isError,
-  } = useMyCurrentlyPlaying();
-
-  const trackName =
-    currentlyPlaying?.item?.name ?? '재생 중인 트랙이 없습니다.';
-  const albumImageUrl = currentlyPlaying?.item?.album.images?.[0]?.url;
-
-  const handleLogout = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
-    Alert.alert('로그아웃', '정말 로그아웃 하시겠습니까?', [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '로그아웃',
-        style: 'destructive',
-        onPress: async () => {
-          await Haptics.notificationAsync(
-            Haptics.NotificationFeedbackType.Success
-          );
-          logout();
-          router.replace('/(auth)/login');
-        },
-      },
-    ]);
-  };
+  const { data: top5Tracks, isLoading } = useTop5Tracks();
 
   return (
-    <View className='flex-1 bg-[#121212]'>
-      <View className='flex-1 items-center justify-center px-4'>
-        <View className='mb-8 items-center'>
-          {/* 로그인 상태 */}
-          <Text className='mt-2 text-lg text-gray-400'>
-            {isLoggedIn ? '로그인됨' : '로그인 안됨'}
-          </Text>
-          <Text className='mt-2 text-lg text-gray-400'>{userInfo.name}</Text>
-
-          {/* 현재 재생중 트랙 */}
-          <View className='items-center mt-6'>
-            <Text className='text-lg text-gray-400 mb-2'>현재 재생 목록</Text>
-
-            {isLoading ? (
-              <ActivityIndicator color='#1DB954' />
-            ) : isError ? (
-              <Text className='text-lg text-gray-400'>
-                불러오는 중 오류가 발생했습니다.
-              </Text>
-            ) : (
-              <>
-                <Text className='text-lg text-gray-400 mb-2'>{trackName}</Text>
-                {albumImageUrl ? (
-                  <Image
-                    source={{ uri: albumImageUrl }}
-                    className='w-10 h-10 rounded-lg'
-                  />
-                ) : (
-                  <View className='w-10 h-10 bg-gray-700 rounded-lg items-center justify-center'>
-                    <Text className='text-xs text-gray-400'>이미지 없음</Text>
-                  </View>
-                )}
-              </>
-            )}
-          </View>
-
-          {/* 로그아웃 버튼 */}
-          <TouchableOpacity
-            className='mt-8 bg-red-500 px-6 py-3 rounded-lg'
-            onPress={handleLogout}
-          >
-            <Text className='text-white font-bold'>로그아웃</Text>
-          </TouchableOpacity>
-        </View>
+    <View className='flex-1 bg-[#121212] gap-4'>
+      <View className='flex-row items-center justify-start px-4'>
+        <Text className='text-white text-2xl font-logo'>FLIP</Text>
       </View>
+      <ScrollView className='flex-1'>
+        {/* 광고 배너 */}
+        <FlatList
+          data={bannerData}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View className='mr-3' style={{ width: width * 0.8 }}>
+              <Image
+                source={{ uri: item.image }}
+                className='w-full h-60 rounded-2xl'
+                resizeMode='cover'
+              />
+              <View className='absolute bottom-3 left-4'>
+                <Text className='text-white text-lg font-bold drop-shadow-lg'>
+                  {item.text}
+                </Text>
+              </View>
+            </View>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 8 }}
+          pagingEnabled
+          snapToInterval={width * 0.8 + 12}
+          decelerationRate='fast'
+        />
+
+        <View className='flex-1'>
+          <View className='px-4'>
+            <Text className='text-white text-2xl font-bold mb-4'>
+              인기 플레이리스트 🧐
+            </Text>
+          </View>
+          {isLoading ? (
+            <ActivityIndicator color='#1DB954' />
+          ) : !top5Tracks?.playlist || top5Tracks.playlist.length === 0 ? (
+            <Text className='text-gray-400 px-4'>플레이리스트가 없습니다.</Text>
+          ) : (
+            <FlatList
+              data={top5Tracks.playlist}
+              keyExtractor={(item) => item.postId.toString()}
+              renderItem={({ item }) => (
+                <View style={{ width: 180, marginRight: 12 }}>
+                  <Top5PlaylistItem playlist={item} />
+                </View>
+              )}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+            />
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 }
