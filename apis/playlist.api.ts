@@ -1,5 +1,3 @@
-import { SPOTIFY_API_URL } from '@/constants/config';
-import useAuthStore from '@/store/authStore';
 import { Playlist } from '@/types/playlist.type';
 import fetcher from '@/utils/fetcher';
 
@@ -13,13 +11,15 @@ export interface PlaylistDB {
   userName: string;
   userNickname: string;
   userProfileUrl: string;
-  postId: string;
+  postId: number;
   playlistId: string;
+  playlistName: string;
+  imageUrl: string;
   isLiked: boolean;
+  likeCount: number;
   viewCount: number;
   createdAt: string;
   commentCount: number;
-  explanation: string;
   genre: string[];
 }
 
@@ -33,45 +33,7 @@ export const fetchPlaylists = async (): Promise<PlaylistResponse> => {
     url: '/playlist',
     method: 'GET',
   });
-  console.log(response.data);
   return response.data;
-};
-
-export const fetchPlaylistDetail = async (playlistId: string) => {
-  const { spotify } = useAuthStore.getState();
-  const response = await fetch(`${SPOTIFY_API_URL}/playlists/${playlistId}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${spotify.accessToken}`,
-    },
-  });
-  const data = await response.json();
-  return data;
-};
-
-export const fetchAllPlaylistsDetails = async (): Promise<Playlist[]> => {
-  const storedData = await fetchPlaylists();
-  const { playlists } = storedData;
-  const enrichedPlaylists = await Promise.all(
-    playlists.map(async (playlist: PlaylistDB) => {
-      try {
-        const spotifyDetail = await fetchPlaylistDetail(playlist.playlistId);
-        return {
-          ...playlist,
-          ...spotifyDetail,
-        };
-      } catch (error) {
-        console.error('Spotify API 호출 중 오류 발생:', error);
-        return {
-          ...playlist,
-          image: null,
-          name: 'Unknown Playlist',
-          spotifyDetail: null,
-        };
-      }
-    })
-  );
-  return enrichedPlaylists;
 };
 
 export interface AddPlaylistId {
@@ -97,6 +59,7 @@ export const addPlaylist = async (
       genres,
     },
   });
+  console.log(response.data);
   return response.data;
 };
 
@@ -136,8 +99,21 @@ export interface Comment {
   isLiked: boolean;
 }
 
+export interface PlaylistTrack {
+  trackId: string;
+  title: string;
+  artistName: string;
+  imageUrl: string;
+  externalUrl: string;
+  durationMs: number;
+}
+
 export interface CommentResponse {
   explanation: string;
+  externalUrl: string;
+  tracks: PlaylistTrack[];
+  totalTrack: number;
+  totalDuration: number;
   message: Message;
   comment: Comment[];
   isFollowed: boolean;
@@ -160,6 +136,7 @@ export const fetchComments = async (postId: string) => {
     url: `/playlist/${postId}`,
     method: 'GET',
   });
+  console.log(response.data);
   return response.data;
 };
 
@@ -222,31 +199,4 @@ export const fetchPlaylistGenre = async (genreId: number) => {
     },
   });
   return response.data;
-};
-
-export const fetchGenrePlaylistsDetails = async (
-  genreId: number
-): Promise<Playlist[]> => {
-  const storedData = await fetchPlaylistGenre(genreId);
-  const { playlists } = storedData;
-  const enrichedPlaylists = await Promise.all(
-    playlists.map(async (playlist: PlaylistDB) => {
-      try {
-        const spotifyDetail = await fetchPlaylistDetail(playlist.playlistId);
-        return {
-          ...playlist,
-          ...spotifyDetail,
-        };
-      } catch (error) {
-        console.error('Spotify API 호출 중 오류 발생:', error);
-        return {
-          ...playlist,
-          image: null,
-          name: 'Unknown Playlist',
-          spotifyDetail: null,
-        };
-      }
-    })
-  );
-  return enrichedPlaylists;
 };
