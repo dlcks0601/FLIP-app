@@ -1,23 +1,24 @@
 import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
-import { Playlist } from '@/types/playlist.type';
 import React from 'react';
 import SpotifyIcon from '../SpotifyIcon';
+import { CommentResponse } from '@/apis/playlist.api';
+
+const formatDuration = (ms: number): string => {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
 
 interface InfoTabProps {
-  totalTracks: number;
-  totalMinutes: number;
-  totalSeconds: number;
-  playlist: Playlist;
+  info?: CommentResponse;
 }
 
-export default function InfoTab({
-  totalTracks,
-  totalMinutes,
-  totalSeconds,
-  playlist,
-}: InfoTabProps) {
+export default function InfoTab({ info }: InfoTabProps) {
+  if (!info) return null;
+
   const handleOpenSpotify = async () => {
-    const playlistId = playlist.playlistId;
+    const playlistId = info.externalUrl;
     const webUrl = `https://open.spotify.com/playlist/${playlistId}`;
 
     if (webUrl) {
@@ -35,7 +36,7 @@ export default function InfoTab({
           <View className='flex-1 bg-[#282828] rounded-lg p-4'>
             <View className='items-start'>
               <Text className='text-[#1DB954] text-4xl font-bold mb-1'>
-                {totalTracks}
+                {info.totalTrack}
               </Text>
               <Text className='text-white text-base'>곡 수</Text>
             </View>
@@ -43,7 +44,7 @@ export default function InfoTab({
           <View className='flex-1 bg-[#282828] rounded-lg p-4'>
             <View className='items-start'>
               <Text className='text-[#1DB954] text-4xl font-bold mb-1'>
-                {totalMinutes}:{totalSeconds.toString().padStart(2, '0')}
+                {formatDuration(info.totalDuration)}
               </Text>
               <Text className='text-white text-base'>플레이리스트 길이</Text>
             </View>
@@ -60,13 +61,10 @@ export default function InfoTab({
       </TouchableOpacity>
 
       <View className='px-4'>
-        {playlist.tracks?.items.map((item, index) => (
-          <View
-            key={item.track.id}
-            className='flex-row items-center py-2 gap-3'
-          >
+        {info.tracks.map((item, index) => (
+          <View key={item.trackId} className='flex-row items-center py-2 gap-3'>
             <Image
-              source={{ uri: item.track.album.images[0].url }}
+              source={{ uri: item.imageUrl }}
               className='w-12 h-12 rounded'
             />
             <View className='flex-1'>
@@ -74,10 +72,10 @@ export default function InfoTab({
                 className='text-white text-base font-medium'
                 numberOfLines={1}
               >
-                {item.track.name}
+                {item.title}
               </Text>
               <Text className='text-gray-400 text-sm' numberOfLines={1}>
-                {item.track.artists.map((artist) => artist.name).join(', ')}
+                {item.artistName}
               </Text>
             </View>
           </View>
