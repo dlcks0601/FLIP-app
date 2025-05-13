@@ -146,9 +146,7 @@ export default function AddPlaylistModal({
               onPress={handleAddPlaylist}
               disabled={isPending}
             >
-              <Text className='text-white font-bold'>
-                {isPending ? '추가중...' : '추가하기'}
-              </Text>
+              <Text className='text-white font-bold'>추가하기</Text>
             </TouchableOpacity>
 
             <GenreSelectModal
