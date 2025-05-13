@@ -36,7 +36,9 @@ export default function PlaylistScreen() {
     usePlaylistGenre(genreId ?? -1);
 
   const isGenreAll = selectedGenre === '전체';
-  const playlists = isGenreAll ? allPlaylists ?? [] : genrePlaylists ?? [];
+  const playlists = isGenreAll
+    ? allPlaylists?.playlists ?? []
+    : genrePlaylists?.playlists ?? [];
   const isPlaylistLoading = isGenreAll ? isAllLoading : isGenreLoadingPlaylists;
 
   return (
