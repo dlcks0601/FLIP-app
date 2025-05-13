@@ -8,18 +8,22 @@ import {
 } from '@/apis/follow.api';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@/utils/queryClient';
-
+import useAuthStore from '@/store/authStore';
 export const useFollowersQuery = () => {
+  const { isLoggedIn } = useAuthStore();
   return useQuery({
     queryKey: ['followers'],
     queryFn: fetchFollowers,
+    enabled: isLoggedIn,
   });
 };
 
 export const useFollowingQuery = () => {
+  const { isLoggedIn } = useAuthStore();
   return useQuery({
     queryKey: ['following'],
     queryFn: fetchFollowing,
+    enabled: isLoggedIn,
   });
 };
 
@@ -50,8 +54,10 @@ export const useDeleteFollowerMutation = () => {
 };
 
 export const useCountFollowQuery = () => {
+  const { isLoggedIn } = useAuthStore();
   return useQuery({
     queryKey: ['countFollow'],
     queryFn: countFollow,
+    enabled: isLoggedIn,
   });
 };

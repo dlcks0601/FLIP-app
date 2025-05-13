@@ -1,6 +1,6 @@
-import { postAuthorizationCode } from '@/apis/auth.api';
+import { deleteUser, postAuthorizationCode } from '@/apis/auth.api';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import useAuthStore from '@/store/authStore';
 import { AuthResponse } from '@/types/auth.type';
 
@@ -22,4 +22,15 @@ export const useAuthMutation = () => {
   });
 
   return { login: mutate };
+};
+
+export const useDeleteUserMutation = () => {
+  const { mutate } = useMutation({
+    mutationFn: () => deleteUser(),
+    onSuccess: () => {
+      useAuthStore.getState().logout();
+      router.replace('/(auth)/login');
+    },
+  });
+  return { deleteUser: mutate };
 };

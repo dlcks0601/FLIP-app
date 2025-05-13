@@ -29,8 +29,11 @@ export const useUserTopArtistStats = (range: string) => {
 };
 
 export const useUserTopGenreStats = (range: string) => {
+  const { spotify } = useAuthStore();
+
   return useQuery<UserTopGenreStats, Error>({
-    queryKey: ['userTopGenres', range],
+    queryKey: ['userTopGenres', spotify.accessToken, range],
     queryFn: () => fetchUserTopGenreStats(range),
+    enabled: !!spotify.accessToken,
   });
 };

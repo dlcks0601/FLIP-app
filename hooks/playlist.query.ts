@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  fetchAllPlaylistsDetails,
   addPlaylist,
   likePlaylist,
   deletePlaylist,
@@ -9,14 +8,17 @@ import {
   likeComment,
   deleteComment,
   fetchGenreCategory,
-  fetchGenrePlaylistsDetails,
+  fetchPlaylists,
+  fetchPlaylistGenre,
 } from '@/apis/playlist.api';
 import { queryClient } from '@/utils/queryClient';
-
+import useAuthStore from '@/store/authStore';
 export const usePlaylists = () => {
+  const { isLoggedIn } = useAuthStore();
   return useQuery({
     queryKey: ['playlists'],
-    queryFn: fetchAllPlaylistsDetails,
+    queryFn: fetchPlaylists,
+    enabled: isLoggedIn,
   });
 };
 
@@ -34,6 +36,7 @@ export const useAddPlaylist = () => {
     onSuccess: () => {
       console.log('playlists 추가');
       queryClient.invalidateQueries({ queryKey: ['playlists'] });
+      queryClient.invalidateQueries({ queryKey: ['mypage-playlist'] });
     },
   });
 };
@@ -43,6 +46,7 @@ export const useLikePlaylist = () => {
     mutationFn: (postId: string) => likePlaylist(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['playlists'] });
+      queryClient.invalidateQueries({ queryKey: ['mypage-playlist'] });
     },
   });
 };
@@ -57,9 +61,11 @@ export const useDeletePlaylist = () => {
 };
 
 export const useComments = (postId: string) => {
+  const { isLoggedIn } = useAuthStore();
   return useQuery({
     queryKey: ['comments', postId],
     queryFn: () => fetchComments(postId),
+    enabled: isLoggedIn,
   });
 };
 
@@ -104,15 +110,19 @@ export const useDeleteComment = () => {
 };
 
 export const useGenreCategory = () => {
+  const { isLoggedIn } = useAuthStore();
   return useQuery({
     queryKey: ['genreCategory'],
     queryFn: () => fetchGenreCategory(),
+    enabled: isLoggedIn,
   });
 };
 
 export const usePlaylistGenre = (genreId: number) => {
+  const { isLoggedIn } = useAuthStore();
   return useQuery({
     queryKey: ['playlistGenre', genreId],
-    queryFn: () => fetchGenrePlaylistsDetails(genreId),
+    queryFn: () => fetchPlaylistGenre(genreId),
+    enabled: isLoggedIn,
   });
 };
