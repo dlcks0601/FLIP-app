@@ -23,7 +23,6 @@ export default function InfoTab({ info }: InfoTabProps) {
   if (!info) return null;
 
   const handleOpenSpotify = async () => {
-    console.log('플레이리스트 URL:', info.externalUrl);
     if (info.externalUrl) {
       const canOpen = await Linking.canOpenURL(info.externalUrl);
       if (canOpen) {
