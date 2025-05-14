@@ -61,7 +61,7 @@ export const deleteFollower = async (targetUserId: string) => {
     url: `/follow/${targetUserId}`,
     method: 'DELETE',
   });
-  console.log(response.data);
+
   return response.data;
 };
 

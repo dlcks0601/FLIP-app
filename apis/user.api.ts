@@ -72,7 +72,7 @@ export const fetchUserTopTrackStats = async (
       range,
     },
   });
-  console.log('Track Stats Response:', response.data);
+
   return response.data;
 };
 
@@ -88,7 +88,7 @@ export const fetchUserTopArtistStats = async (
       range,
     },
   });
-  console.log('Artist Stats Response:', response.data);
+
   return response.data;
 };
 
@@ -102,6 +102,6 @@ export const fetchUserTopGenreStats = async (
       range,
     },
   });
-  console.log('Genre Stats Response:', response.data);
+
   return response.data;
 };

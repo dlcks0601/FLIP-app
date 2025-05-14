@@ -136,7 +136,6 @@ export const fetchComments = async (postId: string) => {
     url: `/playlist/${postId}`,
     method: 'GET',
   });
-  console.log(response.data);
   return response.data;
 };
 
