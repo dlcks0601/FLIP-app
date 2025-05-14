@@ -48,11 +48,7 @@ export default function GenreList({ timeRange }: GenreListProps) {
 
   const renderItem = ({ item, index }: { item: GenreItem; index: number }) => {
     return (
-      <Pressable
-        onPress={() => setSelectedGenre(item)}
-        className='mb-4'
-        style={{ width: ITEM_WIDTH }}
-      >
+      <View className='mb-4' style={{ width: ITEM_WIDTH }}>
         <View className='bg-[#282828] p-4 rounded-lg'>
           <View className='flex-col gap-1'>
             <View className='flex-row items-center gap-1'>
@@ -61,45 +57,21 @@ export default function GenreList({ timeRange }: GenreListProps) {
                 {item.genre}
               </Text>
             </View>
-            <Text className='text-gray-400 text-sm'>
-              {item.artistData.length}명의 아티스트
-            </Text>
           </View>
         </View>
-      </Pressable>
+      </View>
     );
   };
 
   return (
-    <>
-      <FlatList
-        data={genreStats.genres}
-        keyExtractor={(item) => item.genre}
-        contentContainerStyle={{
-          paddingVertical: 20,
-          paddingHorizontal: PADDING,
-        }}
-        renderItem={renderItem}
-      />
-
-      <Modal
-        visible={selectedGenre !== null}
-        animationType='slide'
-        transparent={true}
-        statusBarTranslucent={true}
-        onRequestClose={() => setSelectedGenre(null)}
-      >
-        {selectedGenre && (
-          <View className='flex-1'>
-            <View className='h-[93%] mt-auto'>
-              <GenreDetail
-                genre={selectedGenre}
-                onClose={() => setSelectedGenre(null)}
-              />
-            </View>
-          </View>
-        )}
-      </Modal>
-    </>
+    <FlatList
+      data={genreStats.genres}
+      keyExtractor={(item) => item.genre}
+      contentContainerStyle={{
+        paddingVertical: 20,
+        paddingHorizontal: PADDING,
+      }}
+      renderItem={renderItem}
+    />
   );
 }
