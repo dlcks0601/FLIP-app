@@ -2,9 +2,7 @@ import { View, Text } from 'react-native';
 import SpotifyLoginButton from '../components/SpotifyLoginButton';
 
 export default function LoginScreen() {
-  const handleSpotifyLogin = () => {
-    console.log('Spotify 로그인 시도');
-  };
+  const handleSpotifyLogin = () => {};
   return (
     <View className='flex-1 bg-[#121212] px-8'>
       <View className='flex-1 items-center justify-between py-8'>

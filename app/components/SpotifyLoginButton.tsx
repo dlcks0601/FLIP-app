@@ -26,7 +26,6 @@ export default function SpotifyLoginButton({
       `&redirect_uri=${encodeURIComponent(SPOTIFY_REDIRECT_URI)}` +
       `&scope=${encodeURIComponent(SPOTIFY_SCOPES)}` +
       `&show_dialog=true`;
-    console.log(authUrl);
 
     try {
       const result = await WebBrowser.openAuthSessionAsync(
