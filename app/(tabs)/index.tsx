@@ -41,7 +41,7 @@ export default function HomeScreen() {
   const { data: top5Tracks, isLoading } = useTop5Tracks();
 
   return (
-    <View className='flex-1 bg-[#121212] gap-4'>
+    <View className='flex-1 bg-[#121212]'>
       <View className='flex-row items-center justify-start px-4'>
         <Text className='text-white text-2xl font-logo'>FLIP</Text>
       </View>
@@ -72,9 +72,9 @@ export default function HomeScreen() {
           decelerationRate='fast'
         />
 
-        <View className='flex-1'>
-          <View className='px-4'>
-            <Text className='text-white text-2xl font-bold mb-4'>
+        <View className='flex-1 gap-4 mt-4'>
+          <View className='flex-col px-4'>
+            <Text className='text-white text-2xl font-bold'>
               인기 플레이리스트 🧐
             </Text>
           </View>
