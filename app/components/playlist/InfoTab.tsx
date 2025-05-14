@@ -1,7 +1,8 @@
 import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import SpotifyIcon from '../SpotifyIcon';
 import { CommentResponse } from '@/apis/playlist.api';
+import TrackDetailModal from './TrackDetailModal';
 
 const formatDuration = (ms: number): string => {
   const totalSeconds = Math.floor(ms / 1000);
@@ -15,6 +16,10 @@ interface InfoTabProps {
 }
 
 export default function InfoTab({ info }: InfoTabProps) {
+  const [selectedTrack, setSelectedTrack] = useState<
+    CommentResponse['tracks'][0] | null
+  >(null);
+
   if (!info) return null;
 
   const handleOpenSpotify = async () => {
@@ -62,7 +67,11 @@ export default function InfoTab({ info }: InfoTabProps) {
 
       <View className='px-4'>
         {info.tracks.map((item, index) => (
-          <View key={item.trackId} className='flex-row items-center py-2 gap-3'>
+          <TouchableOpacity
+            key={item.trackId}
+            className='flex-row items-center py-2 gap-3'
+            onPress={() => setSelectedTrack(item)}
+          >
             <Image
               source={{ uri: item.imageUrl }}
               className='w-12 h-12 rounded'
@@ -78,9 +87,15 @@ export default function InfoTab({ info }: InfoTabProps) {
                 {item.artistName}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
+
+      <TrackDetailModal
+        isVisible={!!selectedTrack}
+        onClose={() => setSelectedTrack(null)}
+        track={selectedTrack!}
+      />
     </View>
   );
 }

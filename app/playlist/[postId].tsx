@@ -359,7 +359,7 @@ export default function PlaylistDetailScreen() {
         <View className='flex-1 justify-end'>
           <View className='bg-[#1E1E1E] rounded-t-3xl h-1/4'>
             <View className='items-center py-4'>
-              <View className='w-12 h-1 bg-gray-600 rounded-full mb-4' />
+              <View className='w-12 h-1 bg-gray-600 rounded-full' />
             </View>
             <TouchableOpacity
               onPress={() => {
