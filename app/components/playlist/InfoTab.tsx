@@ -23,13 +23,11 @@ export default function InfoTab({ info }: InfoTabProps) {
   if (!info) return null;
 
   const handleOpenSpotify = async () => {
-    const playlistId = info.externalUrl;
-    const webUrl = `https://open.spotify.com/playlist/${playlistId}`;
-
-    if (webUrl) {
-      const canOpen = await Linking.canOpenURL(webUrl);
+    console.log('플레이리스트 URL:', info.externalUrl);
+    if (info.externalUrl) {
+      const canOpen = await Linking.canOpenURL(info.externalUrl);
       if (canOpen) {
-        await Linking.openURL(webUrl);
+        await Linking.openURL(info.externalUrl);
       }
     }
   };
