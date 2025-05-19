@@ -7,7 +7,7 @@ No complicated signup process—log in quickly and securely using your Spotify a
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6fae81da-5c86-4521-8e1c-69a6e7f46b90" width="30%" />
   <img src="https://github.com/user-attachments/assets/3f9350b9-51e9-4a00-b8a4-79a53fd10f2a" width="30%" />
-  <img src="https://github.com/user-attachments/assets/908b7daa-2aee-43fd-877f-b0a8d53cf61c" width="30%" />
+  <img src="https://github.com/user-attachments/assets/23b7ed07-c3ca-4f9c-984a-8823c23a8710" width="30%" />
 </p>
 
 ### 🎧 Discover New Playlists
@@ -63,9 +63,8 @@ Spotify에서 만든 나만의 플레이리스트, 혼자 듣기 아깝지 않�
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6fae81da-5c86-4521-8e1c-69a6e7f46b90" width="30%" />
   <img src="https://github.com/user-attachments/assets/3f9350b9-51e9-4a00-b8a4-79a53fd10f2a" width="30%" />
-  <img src="https://github.com/user-attachments/assets/908b7daa-2aee-43fd-877f-b0a8d53cf61c" width="30%" />
+  <img src="https://github.com/user-attachments/assets/23b7ed07-c3ca-4f9c-984a-8823c23a8710" width="30%" />
 </p>
-
 
 ### 🎧 플레이리스트 발견하기
 매일 듣던 음악이 지겨워졌다면, 다양한 플레이리스트를 탐색해보세요."Spotify에서 열기" 버튼만 누르면 플레이리스트가 바로 재생됩니다. 마음에 드는 플레이리스트에는 좋아요와 댓글을 남겨보세요!
