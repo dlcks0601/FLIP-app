@@ -2,12 +2,12 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: 'plify-app',
-    slug: 'plify-app',
+    name: 'flip-app',
+    slug: 'flip-app',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
-    scheme: 'plify',
+    scheme: 'flip',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     ios: {
