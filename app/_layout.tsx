@@ -35,7 +35,9 @@ export default function RootLayout() {
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded && isAuthRestored) {
-      await SplashScreen.hideAsync();
+      setTimeout(async () => {
+        await SplashScreen.hideAsync();
+      }, 100); // 100ms 후에 스플래시 숨김
     }
   }, [fontsLoaded, isAuthRestored]);
 
