@@ -9,9 +9,10 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Animated,
 } from 'react-native';
 import { AntDesign, Feather } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAddPlaylist, useGenreCategory } from '@/hooks/playlist.query';
 import GenreSelectModal from './GenreSelectModal';
 
@@ -30,11 +31,19 @@ export default function AddPlaylistModal({
   const [isGenreModalVisible, setIsGenreModalVisible] = useState(false);
   const { mutate: addPlaylist, isPending } = useAddPlaylist();
 
-  // 장르 목록 불러오기
   const { data: genreData } = useGenreCategory();
   const genreList = genreData?.genres ?? [];
 
-  // 선택된 장르 이름 가져오기
+  const overlayOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(overlayOpacity, {
+      toValue: isVisible ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [isVisible]);
+
   const getSelectedGenreNames = () => {
     return genres
       .map((id) => genreList.find((g) => g.id === id)?.name)
@@ -54,10 +63,7 @@ export default function AddPlaylistModal({
     }
 
     Alert.alert('플레이리스트 추가', '이 플레이리스트를 추가하시겠습니까?', [
-      {
-        text: '취소',
-        style: 'cancel',
-      },
+      { text: '취소', style: 'cancel' },
       {
         text: '추가',
         onPress: () => {
@@ -86,7 +92,7 @@ export default function AddPlaylistModal({
 
   return (
     <Modal
-      animationType='slide'
+      animationType='none'
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
@@ -96,10 +102,20 @@ export default function AddPlaylistModal({
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className='flex-1 justify-end'
         >
-          <View
-            className='bg-[#282828] rounded-t-3xl p-6'
-            style={{ paddingBottom: 40 }}
-          >
+          <Animated.View
+            pointerEvents={isVisible ? 'auto' : 'none'}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: '#00000099',
+              opacity: overlayOpacity,
+            }}
+          />
+
+          <View className='bg-zinc-800 rounded-t-3xl p-6 pb-10'>
             <View className='flex-row justify-between items-center mb-4'>
               <Text className='text-white text-xl font-bold'>
                 새 플레이리스트
@@ -110,7 +126,7 @@ export default function AddPlaylistModal({
             </View>
 
             <TextInput
-              className='bg-[#404040] text-white p-4 rounded-lg mb-4 h-12'
+              className='bg-zinc-700 text-white px-4 py-3 rounded-lg mb-4 h-12'
               placeholder='링크를 입력하세요'
               placeholderTextColor='#9CA3AF'
               value={link}
@@ -118,7 +134,7 @@ export default function AddPlaylistModal({
             />
 
             <TextInput
-              className='bg-[#404040] text-white p-4 rounded-lg mb-4 h-20'
+              className='bg-zinc-700 text-white px-4 py-3 rounded-lg mb-4 h-20'
               placeholder='설명을 입력하세요 (선택)'
               placeholderTextColor='#9CA3AF'
               value={explanation}
@@ -129,7 +145,7 @@ export default function AddPlaylistModal({
             <View className='mb-6'>
               <Text className='text-white mb-2'>장르 선택</Text>
               <TouchableOpacity
-                className='bg-[#404040] p-4 rounded-lg flex-row justify-between items-center'
+                className='bg-zinc-700 px-4 py-3 rounded-lg flex-row justify-between items-center'
                 onPress={() => setIsGenreModalVisible(true)}
               >
                 <Text className='text-white'>
@@ -142,7 +158,7 @@ export default function AddPlaylistModal({
             </View>
 
             <TouchableOpacity
-              className='bg-[#1DB954] p-4 rounded-lg items-center'
+              className='bg-[#1DB954] px-4 py-4 rounded-lg items-center'
               onPress={handleAddPlaylist}
               disabled={isPending}
             >
