@@ -90,6 +90,21 @@ Spotify에서 만든 나만의 플레이리스트, 혼자 듣기 아깝지 않�
   <img src="https://github.com/user-attachments/assets/c397a835-a483-41cf-b492-44351292d845" width="30%">
 </p>
 
+### 스탯
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6e0a3896-c440-4cde-918a-13387d9d5533" width="30%">
+  <img src="https://github.com/user-attachments/assets/e92cb8f3-e453-48e6-a427-3a88fe087468" width="30%">
+  <img src="https://github.com/user-attachments/assets/c25f660d-8a50-443e-8123-5f719c24a32e" width="30%">
+</p>
+
+### 마이페이지
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7046cc66-1d99-4d1e-91c1-ced629559924" width="20%">
+  <img src="https://github.com/user-attachments/assets/2fb76042-7222-42e2-a04c-16f735d0453d" width="20%">
+  <img src="https://github.com/user-attachments/assets/a87c82eb-2984-4182-8534-2039bc4b607d" width="20%">
+</p>
+
+
 ## ⚒️ Tech Spec.
 
 ### 📌 Frontend
