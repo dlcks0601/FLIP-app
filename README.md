@@ -99,9 +99,9 @@ Spotify에서 만든 나만의 플레이리스트, 혼자 듣기 아깝지 않�
 
 ### 마이페이지
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/7046cc66-1d99-4d1e-91c1-ced629559924" width="20%">
-  <img src="https://github.com/user-attachments/assets/2fb76042-7222-42e2-a04c-16f735d0453d" width="20%">
-  <img src="https://github.com/user-attachments/assets/a87c82eb-2984-4182-8534-2039bc4b607d" width="20%">
+  <img src="https://github.com/user-attachments/assets/7046cc66-1d99-4d1e-91c1-ced629559924" width="30%">
+  <img src="https://github.com/user-attachments/assets/2fb76042-7222-42e2-a04c-16f735d0453d" width="30%">
+  <img src="https://github.com/user-attachments/assets/a87c82eb-2984-4182-8534-2039bc4b607d" width="30%">
 </p>
 
 
